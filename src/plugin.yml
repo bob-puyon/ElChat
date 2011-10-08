@@ -1,0 +1,6 @@
+name: ElChat
+main: jp.commun.minecraft.elchat.ElChatPlugin
+version: 0.01
+commands:
+    elchat:
+        description: ElChat Command
