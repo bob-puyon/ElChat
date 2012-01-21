@@ -2,6 +2,7 @@ package jp.commun.minecraft.elchat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import jp.commun.minecraft.elchat.util.StringUtils;
 
@@ -327,9 +328,8 @@ public class RomaToHira
 	
 	public static String convert(String text)
 	{
-		
-		
-		Config config = ElChatPlugin.getPlugin().getConfig();
+		List<String> ignoreWords = ElChatPlugin.getPlugin().getConfig().getStringList("romatohira.ignore_words");
+		List<String> kanaWords = ElChatPlugin.getPlugin().getConfig().getStringList("romatohira.kana_words");
 		
 		String[] words = text.trim().split("[\\s,\\.]+");
 	
@@ -338,7 +338,7 @@ public class RomaToHira
 
 		for (int i = 0; i < words.length; i++) {
 			String word = words[i].replaceAll("w+", "w");
-			if (config.ignoreWords != null && config.ignoreWords.contains(word.toLowerCase())) {
+			if (ignoreWords != null && ignoreWords.contains(word.toLowerCase())) {
 				convertedWords.add(word);
 				continue;
 			}
@@ -370,7 +370,7 @@ public class RomaToHira
 			}
 			
 			String convertedWord = sb.toString();
-			if (config.forceKana.contains(convertedWord)) {
+			if (kanaWords.contains(convertedWord)) {
 				convertedWords.add(StringUtils.convertHiraToKana(convertedWord));
 			} else {
 				convertedWords.add(convertedWord);

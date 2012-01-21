@@ -1,8 +1,11 @@
 package jp.commun.minecraft.elchat;
 
+import java.util.ArrayList;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -14,7 +17,6 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 public class ElChatPlugin extends JavaPlugin
 {
 	private static ElChatPlugin plugin;
-	private Config config;
 	private ElChatPlayerListener playerListener;
 	private ElChatServerListener serverListener;
 	private PermissionManager permissionsExManager;
@@ -23,7 +25,9 @@ public class ElChatPlugin extends JavaPlugin
 	public void onEnable()
 	{
 		plugin = this;
-		this.config = new Config(this);
+		
+		this.loadConfiguration();
+		
 		this.playerListener = new ElChatPlayerListener(this);
 		this.serverListener = new ElChatServerListener(this);
 		
@@ -32,7 +36,6 @@ public class ElChatPlugin extends JavaPlugin
 		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Event.Priority.Monitor, this);
 		
 		pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Event.Priority.High, this);
-		
 		
 		Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
         if (permissionsExPlugin != null) {
@@ -46,7 +49,7 @@ public class ElChatPlugin extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		this.config.save();
+		plugin.saveConfig();
 		Log.info("ElChat disabled!");
 
 	}
@@ -60,7 +63,7 @@ public class ElChatPlugin extends JavaPlugin
             if (args.length == 0) {
 
             }  else if (args[0].equals("reload")) {
-            	config.load();
+            	plugin.reloadConfig();
             }
         }
     	return false;
@@ -87,10 +90,34 @@ public class ElChatPlugin extends JavaPlugin
 		return this.permissionsExManager;
 	}
 	
-	public Config getConfig()
-    {
-        return config;
-    }
+	public void loadConfiguration()
+	{
+		FileConfiguration config = plugin.getConfig();
+		config.options().copyDefaults(true);
+		config.addDefault("chat.message_format", "<%prefix%player%suffix&f> %message");
+		config.addDefault("romatohira.enabled", true);
+		ArrayList<String> ignoreWords = new ArrayList<String>(){{
+			add("hi");
+			add("tnt");
+			add("wiki");
+		}};
+		
+		config.addDefault("romatohira.ignore_words", ignoreWords);
+		
+		ArrayList<String> kanaWords = new ArrayList<String>(){{
+			add("べっど");
+			add("ぶろっく");
+			add("ぷらぐいん");
+			add("どあ");
+			add("ちぇすと");
+			add("はっち");
+			add("すぽーん");
+			add("さいと");
+			add("まっぷ");
+		}};
+		config.addDefault("romatohira.kana_words", kanaWords);
+		plugin.saveConfig();
+	}
 
 	public void disablePlugin()
 	{

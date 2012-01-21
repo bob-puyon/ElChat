@@ -11,13 +11,10 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 public class ElChatPlayerListener extends PlayerListener
 {
     private final ElChatPlugin plugin;
-    private Config config;
-
 
     public ElChatPlayerListener(ElChatPlugin instance)
     {
         plugin = instance;
-        config = plugin.getConfig();
     }
     
 	@Override
@@ -28,7 +25,7 @@ public class ElChatPlayerListener extends PlayerListener
 		Player player = event.getPlayer();		
 		String message = event.getMessage();
 		
-		if (this.config.romaToHiraEnabled) {
+		if (plugin.getConfig().getBoolean("romatohira.enabled")) {
 			String cleanMessage = message.replaceAll("&([a-z0-9])", "");
 			if (!RomaToHira.hasHiragana(cleanMessage)) {
 				String hiraMessage = RomaToHira.convert(cleanMessage);
@@ -38,7 +35,7 @@ public class ElChatPlayerListener extends PlayerListener
 			}
 		}
 		
-		message = this.formatMessage(this.config.messageFormat, message, player);
+		message = this.formatMessage(plugin.getConfig().getString("chat.message_format"), message, player);
 		
 		// IDSP対策のため全角スペースを半角スペースに置換
 		message = message.replace("　", "　");
