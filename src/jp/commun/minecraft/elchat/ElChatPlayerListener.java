@@ -40,6 +40,9 @@ public class ElChatPlayerListener extends PlayerListener
 		
 		message = this.formatMessage(this.config.messageFormat, message, player);
 		
+		// IDSP対策のため全角スペースを半角スペースに置換
+		message = message.replace("　", "　");
+		
 		event.setFormat("%2$s");
 		event.setMessage(message);
 	}
