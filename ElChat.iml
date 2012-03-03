@@ -33,7 +33,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="craftbukkit-1.1-R5-SNAPSHOT" level="project" />
     <orderEntry type="library" name="PermissionsEx" level="project" />
     <orderEntry type="library" name="sirc-1.1.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="craftbukkit" level="project" />
