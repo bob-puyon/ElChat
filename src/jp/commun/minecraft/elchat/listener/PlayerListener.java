@@ -19,7 +19,7 @@ public class PlayerListener implements Listener
         plugin = instance;
     }
 
-    @EventHandler(priority= EventPriority.HIGH)
+    @EventHandler(priority=EventPriority.HIGH)
 	public void onPlayerChat(PlayerChatEvent event)
 	{
 		if (event.isCancelled()) return;

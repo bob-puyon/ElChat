@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ElChat">
+    <output-path>$PROJECT_DIR$/classes/artifacts/ElChat</output-path>
+    <root id="archive" name="ElChat.jar">
+      <element id="module-output" name="ElChat" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/config.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
+    </root>
+  </artifact>
+</component>

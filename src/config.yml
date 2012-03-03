@@ -1,0 +1,27 @@
+chat:
+  message_format: <%prefix%player%suffix&f> %message
+romatohira:
+  enabled: true
+  ignore_words:
+  - hi
+  - tnt
+  - wiki
+  - chest
+  - creeper
+  - thanks
+  - thank
+  - house
+  - block
+  - enchant
+  - sword
+  - door
+  kana_words:
+  - べっど
+  - ぶろっく
+  - ぷらぐいん
+  - どあ
+  - ちぇすと
+  - はっち
+  - すぽーん
+  - さいと
+  - まっぷ

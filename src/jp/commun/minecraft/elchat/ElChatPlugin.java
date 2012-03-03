@@ -12,8 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-import java.util.ArrayList;
-
 public class ElChatPlugin extends JavaPlugin
 {
 	private static ElChatPlugin plugin;
@@ -89,37 +87,6 @@ public class ElChatPlugin extends JavaPlugin
 	{
 		FileConfiguration config = plugin.getConfig();
 		config.options().copyDefaults(true);
-		config.addDefault("chat.message_format", "<%prefix%player%suffix&f> %message");
-		config.addDefault("romatohira.enabled", true);
-		ArrayList<String> ignoreWords = new ArrayList<String>(){{
-			add("hi");
-			add("tnt");
-			add("wiki");
-            add("chest");
-            add("creeper");
-            add("thanks");
-            add("thank");
-            add("house");
-            add("block");
-            add("enchant");
-            add("sword");
-            add("door");
-		}};
-		
-		config.addDefault("romatohira.ignore_words", ignoreWords);
-		
-		ArrayList<String> kanaWords = new ArrayList<String>(){{
-			add("べっど");
-			add("ぶろっく");
-			add("ぷらぐいん");
-			add("どあ");
-			add("ちぇすと");
-			add("はっち");
-			add("すぽーん");
-			add("さいと");
-			add("まっぷ");
-		}};
-		config.addDefault("romatohira.kana_words", kanaWords);
 		plugin.saveConfig();
 	}
 
