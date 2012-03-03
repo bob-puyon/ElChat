@@ -1,24 +1,22 @@
 package jp.commun.minecraft.elchat;
 
-import java.util.ArrayList;
-
+import jp.commun.minecraft.elchat.listener.PlayerListener;
+import jp.commun.minecraft.elchat.listener.ServerListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
+
+import java.util.ArrayList;
 
 public class ElChatPlugin extends JavaPlugin
 {
 	private static ElChatPlugin plugin;
-	private ElChatPlayerListener playerListener;
-	private ElChatServerListener serverListener;
 	private PermissionManager permissionsExManager;
 	
 	@Override
@@ -27,15 +25,12 @@ public class ElChatPlugin extends JavaPlugin
 		plugin = this;
 		
 		this.loadConfiguration();
-		
-		this.playerListener = new ElChatPlayerListener(this);
-		this.serverListener = new ElChatServerListener(this);
-		
+
 		PluginManager pm = getServer().getPluginManager();
 		
-		pm.registerEvent(Event.Type.PLUGIN_ENABLE, serverListener, Event.Priority.Monitor, this);
+		pm.registerEvents(new PlayerListener(this), this);
 		
-		pm.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Event.Priority.High, this);
+		pm.registerEvents(new ServerListener(this), this);
 		
 		Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
         if (permissionsExPlugin != null) {
@@ -100,6 +95,15 @@ public class ElChatPlugin extends JavaPlugin
 			add("hi");
 			add("tnt");
 			add("wiki");
+            add("chest");
+            add("creeper");
+            add("thanks");
+            add("thank");
+            add("house");
+            add("block");
+            add("enchant");
+            add("sword");
+            add("door");
 		}};
 		
 		config.addDefault("romatohira.ignore_words", ignoreWords);
