@@ -34,7 +34,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="PermissionsEx" level="project" />
-    <orderEntry type="library" name="sirc-1.1.3-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="sirc-1.1.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="craftbukkit" level="project" />
   </component>
 </module>
