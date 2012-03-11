@@ -1,36 +1,58 @@
 package jp.commun.minecraft.elchat;
 
-import jp.commun.minecraft.elchat.irc.Bot;
-import jp.commun.minecraft.elchat.irc.IrcManager;
+import jp.commun.minecraft.elchat.command.ChannelCommand;
+import jp.commun.minecraft.elchat.command.ElChatCommand;
+import jp.commun.minecraft.elchat.command.IRCCommand;
+import jp.commun.minecraft.elchat.irc.IRCManager;
+import jp.commun.minecraft.elchat.listener.DynmapListener;
 import jp.commun.minecraft.elchat.listener.PlayerListener;
 import jp.commun.minecraft.elchat.listener.ServerListener;
+import jp.commun.minecraft.util.command.CommandManager;
+import jp.commun.minecraft.util.command.CommandPermissionException;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.dynmap.DynmapAPI;
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 public class ElChatPlugin extends JavaPlugin
 {
 	private static ElChatPlugin plugin;
-	private PermissionManager permissionsExManager;
+    private CommandManager commandManager;
+    private IRCManager ircManager;
+    private PlayerManager playerManager;
+    private ChannelManager channelManager;
+    private RomaToHiraData romaToHiraData;
 
-    private IrcManager ircManager;
-	
+    private PermissionManager permissionsExManager;
+    private DynmapAPI dynmapAPI;
+    
 	@Override
 	public void onEnable()
 	{
 		plugin = this;
 		
-		this.loadConfiguration();
+		loadConfiguration();
+
+        commandManager = new CommandManager();
+        commandManager.register(new ElChatCommand(this));
+        commandManager.register(new IRCCommand(this));
+        commandManager.register(new ChannelCommand(this));
+
+        playerManager = new PlayerManager(this);
+        channelManager = new ChannelManager(this);
+        channelManager.loadConfig();
+
+        romaToHiraData = new RomaToHiraData(this);
+        romaToHiraData.loadConfig();
+
+        ircManager = new IRCManager(this);
+        ircManager.connect();
 
 		PluginManager pm = getServer().getPluginManager();
 		
@@ -41,14 +63,19 @@ public class ElChatPlugin extends JavaPlugin
         if (permissionsExPlugin != null) {
             this.setPermissionsExPlugin(permissionsExPlugin);
         }
-
-        this.ircManager = new IrcManager(this);
-        this.ircManager.connect();
+        
+        Plugin dynmapPlugin = pm.getPlugin("dynmap");
+        if (dynmapPlugin != null) {
+            this.setDynmapPlugin(dynmapPlugin);
+            if (dynmapAPI != null) {
+                pm.registerEvents(new DynmapListener(this), this);
+            }
+        }
 		
 		Log.info("ElChat enabled!");
 	}
 
-	@Override
+    @Override
 	public void onDisable()
 	{
 		plugin.saveConfig();
@@ -61,6 +88,14 @@ public class ElChatPlugin extends JavaPlugin
 	@Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
+        try {
+            commandManager.execute(sender, command, args);
+        } catch (CommandPermissionException e) {
+            sender.sendMessage("You don't have permission to do this.");
+        } catch (CommandException e) {
+            sender.sendMessage(e.getMessage());
+        }
+        /*
 		if (sender instanceof ConsoleCommandSender) {
             if (!command.getName().equals("elchat")) return false;
 
@@ -83,7 +118,7 @@ public class ElChatPlugin extends JavaPlugin
 
                         Set<String> channels = bot.getServer().getChannels().keySet();
                         Iterator<String> channelIterator = channels.iterator();
-                        sender.sendMessage("Channel Count: " + String.valueOf(channels.size()));
+                        sender.sendMessage("IRCChannel Count: " + String.valueOf(channels.size()));
                         while (channelIterator.hasNext()) {
                             sender.sendMessage(channelIterator.next());
                         }
@@ -93,6 +128,7 @@ public class ElChatPlugin extends JavaPlugin
             	plugin.reloadConfig();
             }
         }
+        */
     	return false;
     }
 	
@@ -116,6 +152,20 @@ public class ElChatPlugin extends JavaPlugin
 	{
 		return this.permissionsExManager;
 	}
+
+    private void setDynmapPlugin(Plugin dynmapPlugin)
+    {
+        if (dynmapPlugin instanceof  DynmapAPI) {
+            dynmapAPI = (DynmapAPI)dynmapPlugin;
+        } else {
+            dynmapAPI = null;
+        }
+    }
+
+    public DynmapAPI getDynmapAPI()
+    {
+        return dynmapAPI;
+    }
 	
 	public void loadConfiguration()
 	{
@@ -129,7 +179,19 @@ public class ElChatPlugin extends JavaPlugin
 		this.getPluginLoader().disablePlugin(this);
 	}
 
-    public IrcManager getIrcManager() {
+    public IRCManager getIRCManager() {
         return ircManager;
+    }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return playerManager;
+    }
+
+    public RomaToHiraData getRomaToHiraData() {
+        return romaToHiraData;
     }
 }

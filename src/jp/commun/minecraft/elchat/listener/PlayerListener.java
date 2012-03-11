@@ -1,12 +1,14 @@
 package jp.commun.minecraft.elchat.listener;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.RomaToHira;
+import jp.commun.minecraft.elchat.Log;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.PermissionUser;
 
@@ -19,31 +21,25 @@ public class PlayerListener implements Listener
         plugin = instance;
     }
 
-    @EventHandler(priority=EventPriority.HIGH)
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event)
+    {
+        Log.info("onPlayerJoin");
+        plugin.getPlayerManager().onPlayerJoin(event);
+    }
+
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event)
+    {
+        plugin.getPlayerManager().onPlayerQuit(event);
+    }
+
+    @EventHandler(priority=EventPriority.LOWEST)
 	public void onPlayerChat(PlayerChatEvent event)
 	{
 		if (event.isCancelled()) return;
 		
-		Player player = event.getPlayer();		
-		String message = event.getMessage();
-		
-		if (plugin.getConfig().getBoolean("romatohira.enabled")) {
-			String cleanMessage = message.replaceAll("&([a-z0-9])", "");
-			if (!RomaToHira.hasHiragana(cleanMessage)) {
-				String hiraMessage = RomaToHira.convert(cleanMessage);
-				if (!hiraMessage.equals(cleanMessage)) {
-					message += " &f(" + hiraMessage + ")";
-				}
-			}
-		}
-		
-		message = this.formatMessage(plugin.getConfig().getString("chat.message_format"), message, player);
-		
-		// IDSP対策のため全角スペースを半角スペースに置換
-		message = message.replace("　", "　");
-		
-		event.setFormat("%2$s");
-		event.setMessage(message);
+        plugin.getPlayerManager().onPlayerChat(event);
 	}
 	
 	private String formatMessage(String format, String message, Player player)

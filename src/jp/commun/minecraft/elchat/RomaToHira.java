@@ -1,10 +1,10 @@
 package jp.commun.minecraft.elchat;
 
+import jp.commun.minecraft.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import jp.commun.minecraft.elchat.util.StringUtils;
 
 
 public class RomaToHira
@@ -328,8 +328,8 @@ public class RomaToHira
 	
 	public static String convert(String text)
 	{
-		List<String> ignoreWords = ElChatPlugin.getPlugin().getConfig().getStringList("romatohira.ignore_words");
-		List<String> kanaWords = ElChatPlugin.getPlugin().getConfig().getStringList("romatohira.kana_words");
+		List<String> ignoreWords = ElChatPlugin.getPlugin().getRomaToHiraData().getIgnoreWords();
+		List<String> kanaWords = ElChatPlugin.getPlugin().getRomaToHiraData().getKanaWords();
 		
 		String[] words = text.trim().split("[\\s,\\.]+");
 	

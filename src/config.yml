@@ -1,30 +1,7 @@
-chat:
-  message_format: <%prefix%player%suffix&f> %message
-romatohira:
-  enabled: true
-  ignore_words:
-  - hi
-  - tnt
-  - wiki
-  - chest
-  - creeper
-  - thanks
-  - thank
-  - house
-  - block
-  - enchant
-  - sword
-  - door
-  kana_words:
-  - べっど
-  - ぶろっく
-  - ぷらぐいん
-  - どあ
-  - ちぇすと
-  - はっち
-  - すぽーん
-  - さいと
-  - まっぷ
+global:
+  message-format: '[%channel] [%prefix%player%suffix&f] %message'
+  join-format: '[%channel] %player joined channel.'
+  quit-format: '[%channel] %player left channel.'
 irc:
-  servers:
+  networks:
 

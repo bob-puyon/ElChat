@@ -1,0 +1,20 @@
+default-channel: global
+channels:
+  global:
+    title: 'Global'
+    auto-join: true
+    roma-to-hira: true
+    announce: false
+    routes: []
+  local:
+    title: 'Local'
+    auto-join: true
+    roma-to-hira: true
+    area: 500
+    only-world: true
+    announce: false
+    routes: []
+  dynmap:
+    title: 'Dynmap'
+    routes: []
+
