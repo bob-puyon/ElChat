@@ -132,7 +132,7 @@ public abstract class Channel
             // IDSP対策のため全角スペースを半角スペースに置換
             textMessage = textMessage.replace("　", "　");
 
-            format = format.replace("%message", textMessage);
+            format = format.replace("{message}", textMessage);
 
             format = format.replaceAll("&([a-z0-9])", "\u00A7$1");
 
@@ -160,8 +160,8 @@ public abstract class Channel
         String userPrefix = "";
         String userSuffix = "";
         if (sender != null) {
-            format = format.replace("%world", sender.getPlayer().getWorld().getName());
-            format = format.replace("%player", sender.getName());
+            format = format.replace("{world}", sender.getPlayer().getWorld().getName());
+            format = format.replace("{player}", sender.getName());
             PermissionManager permissionManager = ElChatPlugin.getPlugin().getPermissionsExManager();
             if (permissionManager != null) {
                 PermissionUser user = permissionManager.getUser(sender.getPlayer());
@@ -171,12 +171,16 @@ public abstract class Channel
                 }
             }
         } else {
-            format = format.replace("%world", "");
-            format = format.replace("%player", ((ChatMessage)message).getPlayerName());
+            format = format.replace("{world}", "");
+            format = format.replace("{player}", ((ChatMessage)message).getPlayerName());
         }
-        format = format.replace("%prefix", userPrefix);
-        format = format.replace("%suffix", userSuffix);
-        format = format.replace("%channel", message.getChannel().getTitle());
+        format = format.replace("{prefix}", userPrefix);
+        format = format.replace("{suffix}", userSuffix);
+        format = format.replace("{channel}", message.getChannel().getTitle());
+        
+        if (!(this instanceof GameChannel)) {
+            format = format.replace("{channelno}", "");
+        }
         
         return format;
     }

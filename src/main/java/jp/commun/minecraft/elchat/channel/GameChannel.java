@@ -38,6 +38,12 @@ public class GameChannel extends Channel
 
         area = section.getInt("area", 0);
         onlyWorld = section.getBoolean("only-world", false);
+        if (section.contains("bans")) {
+            bans = section.getStringList("bas");
+        }
+        if (section.contains("mutes")) {
+            mutes = section.getStringList("mutes");
+        }
     }
 
     @Override
@@ -46,6 +52,8 @@ public class GameChannel extends Channel
         
         section.set("area", area);
         section.set("only-world", onlyWorld);
+        section.set("bans", bans);
+        section.set("mutes", mutes);
     }
 
     @Override
@@ -66,7 +74,7 @@ public class GameChannel extends Channel
                 if (no != 0) {
                     channelNo = String.valueOf(no) + ". ";
                 }
-                recipient.sendMessage(formattedMessage.replace("%channelno", channelNo));
+                recipient.sendMessage(formattedMessage.replace("{channelno}", channelNo));
             }
         }
     }
@@ -80,6 +88,9 @@ public class GameChannel extends Channel
             player.sendMessage("Cannot join channel (You're banned)");
             return;
         }
+
+        players.put(player.getName(), player);
+        player.addChannel(this);
 
         player.sendMessage("Joined Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
 
@@ -96,12 +107,9 @@ public class GameChannel extends Channel
                     channelNo = String.valueOf(no) + ". ";
                 }
 
-                p.sendMessage(formattedMessage.replace("%channelno", channelNo));
+                p.sendMessage(formattedMessage.replace("{channelno}", channelNo));
             }
         }
-
-        players.put(player.getName(), player);
-        player.addChannel(this);
     }
 
     @Override
@@ -123,7 +131,7 @@ public class GameChannel extends Channel
                     channelNo = String.valueOf(no) + ". ";
                 }
 
-                p.sendMessage(formattedMessage.replace("%channelno", channelNo));
+                p.sendMessage(formattedMessage.replace("{channelno}", channelNo));
             }
         }
 
@@ -134,13 +142,13 @@ public class GameChannel extends Channel
     @Override
     public void chat(ChatPlayer player, String message)
     {
-        if (!players.containsKey(player)) {
+        if (!players.containsKey(player.getName())) {
             player.sendMessage("You're not on that channel.");
             return;
         }
 
         if (mutes.contains(player.getName())) {
-            player.sendMessage("");
+            player.sendMessage("You're muted.");
             return;
         }
 
