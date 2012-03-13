@@ -12,6 +12,7 @@ import jp.commun.minecraft.elchat.channel.Channel;
 public abstract class Message
 {
     protected Channel channel;
+    protected boolean forwadable = true;
 
     public Channel getChannel() {
         return channel;
@@ -19,5 +20,13 @@ public abstract class Message
 
     public void setChannel(Channel channel) {
         this.channel = channel;
+    }
+
+    public boolean isForwadable() {
+        return forwadable;
+    }
+
+    public void setForwadable(boolean forwadable) {
+        this.forwadable = forwadable;
     }
 }

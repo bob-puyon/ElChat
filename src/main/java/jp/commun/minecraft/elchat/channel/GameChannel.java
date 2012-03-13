@@ -1,10 +1,9 @@
 package jp.commun.minecraft.elchat.channel;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
+import jp.commun.minecraft.elchat.message.ChannelMessage;
 import jp.commun.minecraft.elchat.message.ChatMessage;
-import jp.commun.minecraft.elchat.message.JoinMessage;
 import jp.commun.minecraft.elchat.message.Message;
-import jp.commun.minecraft.elchat.message.QuitMessage;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
@@ -21,6 +20,9 @@ public class GameChannel extends Channel
     protected Map<String, ChatPlayer> players;
     protected int area = 0;
     protected boolean onlyWorld = false;
+    protected boolean moderation = false;
+    protected String owner;
+    protected List<String> moderators;
     protected List<String> bans;
     protected List<String> mutes;
 
@@ -28,6 +30,7 @@ public class GameChannel extends Channel
     {
         super(name);
         players = new HashMap<String, ChatPlayer>();
+        moderators = new ArrayList<String>();
         bans = new ArrayList<String>();
         mutes = new ArrayList<String>();
     }
@@ -38,6 +41,11 @@ public class GameChannel extends Channel
 
         area = section.getInt("area", 0);
         onlyWorld = section.getBoolean("only-world", false);
+        moderation = section.getBoolean("moderation", false);
+        owner = section.getString("owner");
+        if (section.contains("moderators")) {
+            moderators = section.getStringList("moderatos");
+        }
         if (section.contains("bans")) {
             bans = section.getStringList("bas");
         }
@@ -52,6 +60,9 @@ public class GameChannel extends Channel
         
         section.set("area", area);
         section.set("only-world", onlyWorld);
+        section.set("moderation", moderation);
+        section.set("owner", owner);
+        section.set("moderator", moderators);
         section.set("bans", bans);
         section.set("mutes", mutes);
     }
@@ -70,9 +81,11 @@ public class GameChannel extends Channel
                 if (area != 0 && sender != null && recipient.getLocation().distance(sender.getLocation()) > area) continue;
     
                 String channelNo = "";
-                int no = recipient.getChannelNo(this);
-                if (no != 0) {
-                    channelNo = String.valueOf(no) + ". ";
+                if (message.getChannel().equals(this)) {
+                    int no = recipient.getChannelNo(this);
+                    if (no != 0) {
+                        channelNo = String.valueOf(no) + ". ";
+                    }
                 }
                 recipient.sendMessage(formattedMessage.replace("{channelno}", channelNo));
             }
@@ -85,7 +98,7 @@ public class GameChannel extends Channel
         if (players.containsKey(player.getName())) return;
 
         if (bans.contains(player.getName())) {
-            player.sendMessage("Cannot join channel (You're banned)");
+            player.sendMessage("You are banned from that channel.");
             return;
         }
 
@@ -94,7 +107,8 @@ public class GameChannel extends Channel
 
         player.sendMessage("Joined Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
 
-        Message message = new JoinMessage(player);
+        Message message = new ChannelMessage(player.getName() + " joined channel.");
+        message.setForwadable(forwardAnnounce);
         sendMessage(message);
 
         if (announce) {
@@ -118,7 +132,8 @@ public class GameChannel extends Channel
         if (!players.containsKey(player.getName())) return;
         player.sendMessage("Left Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
 
-        Message message = new QuitMessage(player);
+        Message message = new ChannelMessage(player.getName() + " left channel.");
+        message.setForwadable(forwardAnnounce);
         sendMessage(message);
 
         if (announce) {
@@ -136,7 +151,6 @@ public class GameChannel extends Channel
         }
 
         players.remove(player.getName());
-        player.removeChannel(this);
     }
 
     @Override
@@ -147,19 +161,125 @@ public class GameChannel extends Channel
             return;
         }
 
-        if (mutes.contains(player.getName())) {
-            player.sendMessage("You're muted.");
+        if (mutes.contains(player.getName()) || (isModeration() && !isOwner(player) && !isModerator(player))) {
+            player.sendMessage("You do not have permission to speak.");
             return;
         }
 
         Message m = new ChatMessage(player, message);
         sendMessage(m);
     }
-    
-    
 
+    public void kick(ChatPlayer player)
+    {
+        if (players.containsKey(player.getName())) {
+            player.sendMessage("You are kicked from that channel.");
+            quit(player);
+            player.removeChannel(this);
+        }
+    }
+    
+    public void ban(ChatPlayer player)
+    {
+        if (!bans.contains(player.getName())) {
+            bans.add(player.getName());
+
+            // モデレータから削除
+            if (moderators.contains(player.getName())) {
+                moderators.remove(player.getName());
+            }
+
+            // オーナーから削除
+            if (isOwner(player)) {
+                setOwner(null);
+            }
+
+            if (players.containsKey(player.getName())) {
+                player.sendMessage("You are banned from that channel.");
+                quit(player);
+                player.removeChannel(this);
+            }
+        }
+    }
+    
+    public void unban(ChatPlayer player)
+    {
+        if (bans.contains(player.getName())) {
+            bans.remove(player.getName());
+        }
+    }
+    
+    public void mute(ChatPlayer player)
+    {
+        if (!mutes.contains(player.getName())) {
+            mutes.add(player.getName());
+        }
+    }
+    
+    public void unmute(ChatPlayer player)
+    {
+        if (mutes.contains(player.getName())) {
+            mutes.remove(player.getName());
+        }
+    }
+    
     public Map<String, ChatPlayer> getPlayers()
     {
         return players;
+    }
+
+    public int getArea() {
+        return area;
+    }
+
+    public void setArea(int area) {
+        this.area = area;
+    }
+
+    public boolean isOnlyWorld() {
+        return onlyWorld;
+    }
+
+    public void setOnlyWorld(boolean onlyWorld) {
+        this.onlyWorld = onlyWorld;
+    }
+
+    public boolean isModeration() {
+        return moderation;
+    }
+
+    public void setModeration(boolean moderation) {
+        this.moderation = moderation;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public boolean isOwner(ChatPlayer player)
+    {
+        return (owner != null && owner.equals(player.getName()));
+    }
+    
+
+    public List<String> getModerators() {
+        return moderators;
+    }
+    
+    public boolean isModerator(ChatPlayer player)
+    {
+        return moderators.contains(player.getName());
+    }
+
+    public List<String> getBans() {
+        return bans;
+    }
+
+    public List<String> getMutes() {
+        return mutes;
     }
 }

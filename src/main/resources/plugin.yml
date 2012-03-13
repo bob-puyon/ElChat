@@ -10,6 +10,10 @@ commands:
         description: Channel Command
     ch:
         description: Channel Command
+    join:
+        description: Channel Join Command
+    leave:
+        description: Channel Leave Command
     '1':
         description: Channel Command
     '2':
@@ -28,3 +32,50 @@ commands:
         description: Channel Command
     '9':
         description: Channel Command
+permissions:
+    elchat.*:
+        description: Gives access to all ElChat commands
+        childrens:
+            elchat.reload: true
+            elchat.channel.*: true
+    elchat.channel.*:
+        description: Gives access to all ElChat Channel commands
+        childrens:
+            elchat.channel.join: true
+            elchat.channel.leave: true
+            elchat.channel.create: true
+            elchat.channel.list: true
+            elchat.channel.ban: true
+            elchat.channel.unban: true
+            elchat.channel.moderator: true
+            elchat.channel.unmoderator: true
+            elchat.channel.moderation: true
+    elchat.channel.join:
+        description: Allows you to join Channel
+        default: true
+    elchat.channel.leave:
+        description: Allows you to leave Channel
+        default: true
+    elchat.channel.create:
+        description: Allows you to create Channel
+        default: true
+    elchat.channel.list:
+        descripton: Allows you to list Channel
+        default: true
+    elchat.channel.ban:
+        description: Allows you to ban channel user
+        default: true
+    elchat.channel.unban:
+        description: Allows you to unban channel user
+        default: true
+    elchat.channel.moderation:
+        description: Allows you to moderation Channel
+        default: true
+    elchat.channel.moderator:
+        description: Allows you to moderator command
+        default: true
+    elchat.channel.unmoderator:
+        description: Allows you to unmoderator command
+        default: true
+
+

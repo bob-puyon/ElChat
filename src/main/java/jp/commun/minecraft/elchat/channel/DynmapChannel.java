@@ -47,4 +47,9 @@ public class DynmapChannel extends Channel
     public void chat(ChatPlayer player, String message) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    @Override
+    public void broadcast(String message) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

@@ -10,9 +10,7 @@ import jp.commun.minecraft.elchat.event.IRCMessageEvent;
 import jp.commun.minecraft.elchat.event.IRCQuitEvent;
 import jp.commun.minecraft.elchat.irc.Bot;
 import jp.commun.minecraft.elchat.message.ChatMessage;
-import jp.commun.minecraft.elchat.message.JoinMessage;
 import jp.commun.minecraft.elchat.message.Message;
-import jp.commun.minecraft.elchat.message.QuitMessage;
 import jp.commun.minecraft.util.StringUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,8 +67,7 @@ public class IRCListener implements Listener
         if (bot != null) {
             IRCChannel channel = bot.getServer().getChannel(event.getChannel());
             if (channel != null && channel.isIrcAnnounce()) {
-                Message message = new JoinMessage(event.getNick());
-                channel.sendMessage(message);
+                channel.announce(String.format("{0} joined channel.", event.getNick()));
             }
         }
     }
@@ -82,8 +79,7 @@ public class IRCListener implements Listener
         if (bot != null) {
             IRCChannel channel = bot.getServer().getChannel(event.getChannel());
             if (channel != null && channel.isIrcAnnounce()) {
-                Message message = new QuitMessage(event.getNick());
-                channel.sendMessage(message);
+                channel.announce(String.format("{0} left channel.", event.getNick()));
             }
         }
     }

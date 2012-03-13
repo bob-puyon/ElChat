@@ -74,7 +74,7 @@ public class IRCManager
         if (this.bots.containsKey(network)) {
             Server server = this.bots.get(network).getServer();
             if (server.getChannels().containsKey(channel)) {
-                server.getChannels().get(channel).getRoutes();
+                server.getChannels().get(channel).getForwards();
             }
         }
         return null;

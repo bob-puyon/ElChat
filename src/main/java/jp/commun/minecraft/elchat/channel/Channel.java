@@ -27,17 +27,16 @@ public abstract class Channel
     protected String type;
     protected boolean autoJoin;
     protected String messageFormat;
-    protected String joinFormat;
-    protected String quitFormat;
+    protected String channelFormat;
     protected boolean romaToHira;
-    protected List<String> routes;
+    protected List<String> forwards;
     protected boolean announce = false;
-    protected boolean hopAnnounce = false;
+    protected boolean forwardAnnounce = false;
 
     public Channel(String name)
     {
         this.name = name;
-        this.routes = new ArrayList<String>();
+        this.forwards = new ArrayList<String>();
     }
     
     public void loadConfig(ConfigurationSection section)
@@ -47,14 +46,13 @@ public abstract class Channel
         type = section.getString("type");
         if (section.contains("auto-join")) this.autoJoin = section.getBoolean("auto-join", false);
         messageFormat = section.getString("message-format", null);
-        joinFormat = section.getString("join-format", null);
-        quitFormat = section.getString("quit-format", null);
+        channelFormat = section.getString("chanel-format", null);
         if (section.contains("roma-to-hira")) romaToHira = section.getBoolean("roma-to-hira", false);
-        if (section.contains("routes")) {
-            routes = section.getStringList("routes");
+        if (section.contains("forwards")) {
+            forwards = section.getStringList("forwards");
         }
         if (section.contains("announce")) announce = section.getBoolean("announce", false);
-        if (section.contains("hop-announce")) hopAnnounce = section.getBoolean("hop-announce", false);
+        if (section.contains("hop-announce")) forwardAnnounce = section.getBoolean("hop-announce", false);
     }
     
     public void saveConfig(ConfigurationSection section)
@@ -63,12 +61,11 @@ public abstract class Channel
         section.set("type", type);
         section.set("auto-join", autoJoin);
         section.set("message-format", messageFormat);
-        section.set("join-format", joinFormat);
-        section.set("quit-format", quitFormat);
+        section.set("join-format", channelFormat);
         section.set("roma-to-hira", romaToHira);
-        section.set("routes", routes);
+        section.set("forwards", forwards);
         section.set("announce", announce);
-        section.set("hop-announce", hopAnnounce);
+        section.set("hop-announce", forwardAnnounce);
     }
     
     public void sendMessage(Message message)
@@ -88,20 +85,18 @@ public abstract class Channel
                 }
             }
             
-            if ((!(message instanceof JoinMessage) && !(message instanceof QuitMessage)) || hopAnnounce) {
-                route(message);
-            }
-            
+            forward(message);
         } else {
             Log.info("originalChannel: " + message.getChannel().getName());
         }
         processMessage(message);
     }
     
-    protected void route(Message message)
+    protected void forward(Message message)
     {
+        if (!message.isForwadable()) return;
         // routing another channel
-        Iterator<String> it = routes.iterator();
+        Iterator<String> it = forwards.iterator();
         while (it.hasNext()) {
             String channelName = it.next();
             Log.info("routing nexthop check:" + channelName);
@@ -125,7 +120,8 @@ public abstract class Channel
     {
         if (message instanceof ChatMessage) {
             String format = getMessageFormat();
-            format = getPlayerFormat(format, (PlayerMessage)message);
+            format = formatPlayer(format, (PlayerMessage) message);
+            format = formatChannel(format, message);
             
 
             String textMessage = ((ChatMessage)message).getMessage();
@@ -137,14 +133,9 @@ public abstract class Channel
             format = format.replaceAll("&([a-z0-9])", "\u00A7$1");
 
             return format;
-        } else if (message instanceof JoinMessage) {
-            String format = getJoinFormat();
-            format = getPlayerFormat(format, (PlayerMessage)message);
-            format = format.replaceAll("&([a-z0-9])", "\u00A7$1");
-            return format;
-        } else if (message instanceof QuitMessage) {
-            String format = getQuitFormat();
-            format = getPlayerFormat(format, (PlayerMessage)message);
+        } else if (message instanceof ChannelMessage) {
+            String format = getChannelFormat();
+            format = formatChannel(format, message);
             format = format.replaceAll("&([a-z0-9])", "\u00A7$1");
             return format;
         } else if (message instanceof PluginMessage) {
@@ -154,7 +145,7 @@ public abstract class Channel
         return "";
     }
     
-    public String getPlayerFormat(String format, PlayerMessage message)
+    public String formatPlayer(String format, PlayerMessage message)
     {
         ChatPlayer sender = message.getPlayer();
         String userPrefix = "";
@@ -176,6 +167,11 @@ public abstract class Channel
         }
         format = format.replace("{prefix}", userPrefix);
         format = format.replace("{suffix}", userSuffix);
+        return format;
+    }
+    
+    public String formatChannel(String format, Message message)
+    {
         format = format.replace("{channel}", message.getChannel().getTitle());
         
         if (!(this instanceof GameChannel)) {
@@ -191,18 +187,12 @@ public abstract class Channel
         return messageFormat;
     }
     
-    public String getJoinFormat()
+    public String getChannelFormat()
     {
-        if (joinFormat == null) return ElChatPlugin.getPlugin().getConfig().getString("global.join-format");
-        return joinFormat;
+        if (channelFormat == null) return ElChatPlugin.getPlugin().getConfig().getString("global.channel-format");
+        return channelFormat;
     }
     
-    public String getQuitFormat()
-    {
-        if (quitFormat == null) return ElChatPlugin.getPlugin().getConfig().getString("global.quit-format");
-        return quitFormat;
-    }
-
 
     public String getName() {
         return name;
@@ -229,8 +219,8 @@ public abstract class Channel
         this.autoJoin = autoJoin;
     }
 
-    public List<String> getRoutes() {
-        return routes;
+    public List<String> getForwards() {
+        return forwards;
     }
 
     public boolean isRomaToHira() {
@@ -249,15 +239,28 @@ public abstract class Channel
         this.announce = announce;
     }
 
-    public boolean isHopAnnounce() {
-        return hopAnnounce;
+    public boolean isForwardAnnounce() {
+        return forwardAnnounce;
     }
 
-    public void setHopAnnounce(boolean hopAnnounce) {
-        this.hopAnnounce = hopAnnounce;
+    public void setForwardAnnounce(boolean forwardAnnounce) {
+        this.forwardAnnounce = forwardAnnounce;
     }
 
     public abstract void join(ChatPlayer player);
     public abstract void quit(ChatPlayer player);
     public abstract void chat(ChatPlayer player, String message);
+    
+    public void broadcast(String message)
+    {
+        Message m = new ChannelMessage(message);
+        sendMessage(m);
+    }
+
+    public  void announce(String message)
+    {
+        Message m = new ChannelMessage(message);
+        m.setForwadable(isForwardAnnounce());
+        sendMessage(m);
+    }
 }

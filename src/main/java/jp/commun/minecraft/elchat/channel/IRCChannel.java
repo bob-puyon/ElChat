@@ -73,6 +73,11 @@ public class IRCChannel extends Channel
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    @Override
+    public void broadcast(String message) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
     public boolean isRelay() {
         return relay;
     }

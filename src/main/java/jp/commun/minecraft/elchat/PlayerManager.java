@@ -103,8 +103,11 @@ public class PlayerManager
             }
             players.remove(player.getName());
 
-            for (Channel channel: chatPlayer.getChannels().values()) {
+            Iterator<Channel> it = chatPlayer.getChannels().values().iterator();
+            while (it.hasNext()) {
+                Channel channel = it.next();
                 channel.quit(chatPlayer);
+                it.remove();
             }
         }
     }

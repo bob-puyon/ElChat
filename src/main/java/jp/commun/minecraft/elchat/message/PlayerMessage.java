@@ -14,13 +14,11 @@ public abstract class PlayerMessage extends Message
     protected ChatPlayer player;
     protected String playerName;
 
-    public PlayerMessage(ChatPlayer player)
-    {
+    protected PlayerMessage(ChatPlayer player) {
         this.player = player;
     }
 
-    public PlayerMessage(String playerName)
-    {
+    protected PlayerMessage(String playerName) {
         this.playerName = playerName;
     }
 

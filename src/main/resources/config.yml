@@ -2,6 +2,7 @@ global:
   message-format: '[{channelno}{channel}] [{prefix}{player}{suffix}&f] {message}'
   join-format: '[{channelno}{channel}] {player} joined channel.'
   quit-format: '[{channelno}{channel}] {player} left channel.'
+  channel-format: '[{channelno}{channel}] {message}'
 irc:
   networks:
 
