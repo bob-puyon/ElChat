@@ -7,6 +7,8 @@
     <groupId>jp.commun</groupId>
     <artifactId>elchat</artifactId>
     <version>1.0.0</version>
+    <name>ElChat</name>
+    <url>http://minecraft.commun.jp/</url>
 
     <repositories>
         <repository>
@@ -32,7 +34,7 @@
         <dependency>
             <groupId>jp.commun</groupId>
             <artifactId>minecraftutils</artifactId>
-            <version>1.0</version>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>ru.tehkode</groupId>

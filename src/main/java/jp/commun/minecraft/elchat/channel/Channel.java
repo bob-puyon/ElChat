@@ -218,6 +218,20 @@ public abstract class Channel
     public void setAutoJoin(boolean autoJoin) {
         this.autoJoin = autoJoin;
     }
+    
+    public void addForward(Channel channel)
+    {
+        if (channel != null) {
+            addForward(channel.getName());
+        }
+    }
+    
+    public void addForward(String channelName)
+    {
+        if (channelName != null && !forwards.contains(channelName)) {
+            forwards.add(channelName);
+        }
+    }
 
     public List<String> getForwards() {
         return forwards;
@@ -230,6 +244,7 @@ public abstract class Channel
     public void setRomaToHira(boolean romaToHira) {
         this.romaToHira = romaToHira;
     }
+
 
     public boolean isAnnounce() {
         return announce;

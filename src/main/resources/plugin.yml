@@ -1,6 +1,7 @@
 name: ElChat
 main: jp.commun.minecraft.elchat.ElChatPlugin
 version: 0.1.0
+softdepends: [ PermissionsEx, dynmap ]
 commands:
     elchat:
         description: ElChat Command

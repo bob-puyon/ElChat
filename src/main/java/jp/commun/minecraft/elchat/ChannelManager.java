@@ -3,6 +3,7 @@ package jp.commun.minecraft.elchat;
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.DynmapChannel;
 import jp.commun.minecraft.elchat.channel.GameChannel;
+import jp.commun.minecraft.elchat.channel.IRCChannel;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -93,7 +94,7 @@ public class ChannelManager
         Iterator<String> it = channels.keySet().iterator();
         while (it.hasNext()) {
             Channel channel = channels.get(it.next());
-            if (!(channel instanceof GameChannel)) continue;
+            if (channel instanceof IRCChannel) continue;
             ConfigurationSection section = config.createSection("channels." + channel.getName());
             channel.saveConfig(section);
         }

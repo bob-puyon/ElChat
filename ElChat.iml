@@ -11,7 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.bukkit:bukkit:1.2.3-R0.2" level="project" />
-    <orderEntry type="library" name="Maven: jp.commun:minecraftutils:1.0" level="project" />
+    <orderEntry type="library" name="Maven: jp.commun:minecraftutils:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: ru.tehkode:PermissionsEx:1.18" level="project" />
     <orderEntry type="library" name="Maven: org.yaml:snakeyaml:1.9" level="project" />
     <orderEntry type="library" name="Maven: org.dynmap:dynmap-api:0.34.1" level="project" />

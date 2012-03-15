@@ -36,7 +36,8 @@ public class IRCColor
         for (String ircColor: COLOR_MAP.keySet()) {
             text = text.replace("\u00A7" + COLOR_MAP.get(ircColor), "\u0003" + ircColor);
         }
-        text = text.replace("\u00A700", "\u0003f");
+        // white to normal
+        text = text.replace("\u00A7f", "\u000f");
         return text;
     }
     
@@ -45,7 +46,8 @@ public class IRCColor
         for (String ircColor: COLOR_MAP.keySet()) {
             text = text.replace("\u0003" + ircColor, "\u00A7" + COLOR_MAP.get(ircColor));
         }
-        text = text.replace("\u0003f", "\u00A700");
+        // normal to white
+        text = text.replace("\u000f", "\u00A7f");
         return text;
     }
 }

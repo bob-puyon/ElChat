@@ -5,7 +5,7 @@ channels:
     auto-join: true
     roma-to-hira: true
     announce: false
-    forwards: []
+    forwards: [ dynmap ]
   local:
     title: 'Local'
     auto-join: true
@@ -13,7 +13,7 @@ channels:
     area: 500
     only-world: true
     announce: false
-    forward: []
+    forwards: []
   dynmap:
     title: 'Dynmap'
     routes: []

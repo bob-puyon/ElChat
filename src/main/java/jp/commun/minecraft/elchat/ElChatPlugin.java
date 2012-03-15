@@ -1,6 +1,7 @@
 package jp.commun.minecraft.elchat;
 
 import jp.commun.minecraft.elchat.channel.Channel;
+import jp.commun.minecraft.elchat.channel.DynmapChannel;
 import jp.commun.minecraft.elchat.command.ChannelCommand;
 import jp.commun.minecraft.elchat.command.ElChatCommand;
 import jp.commun.minecraft.elchat.command.IRCCommand;
@@ -71,8 +72,10 @@ public class ElChatPlugin extends JavaPlugin
         
         Plugin dynmapPlugin = pm.getPlugin("dynmap");
         if (dynmapPlugin != null) {
+            Log.info("found dynmap!");
             this.setDynmapPlugin(dynmapPlugin);
             if (dynmapAPI != null) {
+                Log.info("found dynmap API!");
                 pm.registerEvents(new DynmapListener(this), this);
             }
         }
@@ -162,6 +165,13 @@ public class ElChatPlugin extends JavaPlugin
     {
         if (dynmapPlugin instanceof  DynmapAPI) {
             dynmapAPI = (DynmapAPI)dynmapPlugin;
+            Channel channel = getChannelManager().getChannel("dynmap");
+            if (channel == null) {
+                Log.info("adding dynmap channel");
+                channel = new DynmapChannel("dynmap");
+                channel.addForward(getChannelManager().getDefaultChannel());
+                getChannelManager().addChannel(channel);
+            }
         } else {
             dynmapAPI = null;
         }
