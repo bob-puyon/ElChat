@@ -52,7 +52,7 @@ public abstract class Channel
             forwards = section.getStringList("forwards");
         }
         if (section.contains("announce")) announce = section.getBoolean("announce", false);
-        if (section.contains("hop-announce")) forwardAnnounce = section.getBoolean("hop-announce", false);
+        if (section.contains("forward-announce")) forwardAnnounce = section.getBoolean("forward-announce", false);
     }
     
     public void saveConfig(ConfigurationSection section)
@@ -65,7 +65,7 @@ public abstract class Channel
         section.set("roma-to-hira", romaToHira);
         section.set("forwards", forwards);
         section.set("announce", announce);
-        section.set("hop-announce", forwardAnnounce);
+        section.set("forward-announce", forwardAnnounce);
     }
     
     public void sendMessage(Message message)
@@ -136,6 +136,7 @@ public abstract class Channel
         } else if (message instanceof ChannelMessage) {
             String format = getChannelFormat();
             format = formatChannel(format, message);
+            format = format.replace("{message}", ((ChannelMessage)message).getMessage());
             format = format.replaceAll("&([a-z0-9])", "\u00A7$1");
             return format;
         } else if (message instanceof PluginMessage) {

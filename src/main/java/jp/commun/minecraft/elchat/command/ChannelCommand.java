@@ -74,6 +74,30 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
+    public void info(CommandSender sender, String commandName, String[] args)
+    {
+
+    }
+
+    @Command( names = { "channel who", "ch who" }, permissions = { "elchat.channel.who" })
+    public void who(CommandSender sender, String commandName, String[] args)
+    {
+        Channel channel;
+        ChatPlayer player = null;
+        if (sender instanceof ConsoleCommandSender) {
+            channel = plugin.getChannelManager().getChannel(args[0]);
+        } else {
+            player = plugin.getPlayerManager().getPlayer(sender.getName());
+            channel = plugin.getChannelManager().getChannel(args[0], player);
+        }
+
+        if (channel == null || !(channel instanceof GameChannel)) {
+            sender.sendMessage("no such channel.");
+        }
+
+        sender.sendMessage(StringUtils.join((String[])((GameChannel)channel).getPlayers().keySet().toArray(), ", "));
+    }
+
     @Command( names = { "channel join", "ch join", "join" }, permissions = { "elchat.channel.join" }, allowConsole = false, min = 1)
     public void join(CommandSender sender, String commandName, String[] args)
     {

@@ -63,6 +63,12 @@ permissions:
     elchat.channel.list:
         descripton: Allows you to list Channel
         default: true
+    elchat.channel.who:
+        description: Allows you to list channel users
+        default: true
+    elchat.channel.set:
+        description: Allows you to info channel
+        default: true
     elchat.channel.ban:
         description: Allows you to ban channel user
         default: true

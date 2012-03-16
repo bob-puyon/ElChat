@@ -25,7 +25,7 @@ import org.dynmap.DynmapAPI;
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-public class ElChatPlugin extends JavaPlugin
+public class ElChatPlugin extends JavaPlugin implements ElChatAPI
 {
 	private static ElChatPlugin plugin;
     private CommandManager commandManager;

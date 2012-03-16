@@ -2,6 +2,7 @@ package jp.commun.minecraft.elchat.irc;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.Log;
+import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.IRCChannel;
 import jp.commun.minecraft.elchat.message.Message;
 
@@ -36,6 +37,18 @@ public class IRCManager
                         plugin.getChannelManager().addChannel(channel);
                     }
                 }
+            }
+        }
+    }
+    
+
+    public void reloadConfig()
+    {
+        for (Bot bot: bots.values()) {
+            for (Channel channel: bot.getServer().getChannels().values()) {
+                String sectionName = "irc.networks." + bot.getServer().getName() + ".channels." + channel.getName();
+                if (!plugin.getConfig().contains(sectionName)) continue;
+                channel.loadConfig(plugin.getConfig().getConfigurationSection(sectionName));
             }
         }
     }

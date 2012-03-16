@@ -115,14 +115,14 @@ public class ChannelManager
     {
         if (!channels.containsKey(channel.getName())) {
             Log.info("ChannelManager addChannel:" + channel.getName());
-            channels.put(channel.getName(), channel);
+            channels.put(channel.getName().toLowerCase(), channel);
         }
     }
     
     public Channel getChannel(String name)
     {
-        if (!channels.containsKey(name)) return null;
-        return channels.get(name);
+        if (!channels.containsKey(name.toLowerCase())) return null;
+        return channels.get(name.toLowerCase());
     }
     
     public Channel getChannel(String name, ChatPlayer player)
@@ -134,7 +134,7 @@ public class ChannelManager
         } catch (NumberFormatException e) {
         }
         
-        if (channels.containsKey(name)) return channels.get(name);
+        if (channels.containsKey(name.toLowerCase())) return channels.get(name.toLowerCase());
         
         for (Channel channel: channels.values()) {
             if (channel.getTitle().equals(name)) return channel;
@@ -151,6 +151,6 @@ public class ChannelManager
     public Channel getDefaultChannel()
     {
         if (!channels.containsKey(defaultChannel)) return null;
-        return channels.get(defaultChannel);
+        return channels.get(defaultChannel.toLowerCase());
     }
 }

@@ -6,7 +6,7 @@
 
     <groupId>jp.commun</groupId>
     <artifactId>elchat</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>ElChat</name>
     <url>http://minecraft.commun.jp/</url>
 
