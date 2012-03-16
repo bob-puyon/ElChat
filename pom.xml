@@ -86,7 +86,7 @@
                     <options>
                         <option>-allowaccessmodification</option>
                         <option>-keep public class * extends org.bukkit.plugin.java.JavaPlugin { *; }</option>
-                        <option>-keep public interface jp.commun.minecraft.elchat.ElChatAPI</option>
+                        <option>-keep public interface jp.commun.minecraft.elchat.ElChatAPI { *; }</option>
                     </options>
                     <libs>
                         <lib>${java.home}/lib/rt.jar</lib>

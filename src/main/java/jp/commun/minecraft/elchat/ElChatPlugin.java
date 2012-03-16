@@ -209,7 +209,8 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
     public RomaToHiraData getRomaToHiraData() {
         return romaToHiraData;
     }
-    
+
+    @Override
     public void sendMessage(String channel, String message)
     {
         Channel c = channelManager.getChannel(channel);
