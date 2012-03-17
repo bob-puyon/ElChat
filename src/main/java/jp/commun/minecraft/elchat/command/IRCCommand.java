@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,9 +31,7 @@ public class IRCCommand implements CommandHandler
     public void irc(CommandSender sender, String commandName, String[] args)
     {
         Map<String, Bot> bots = plugin.getIRCManager().getBots();
-        Iterator<String> it = bots.keySet().iterator();
-        while (it.hasNext()) {
-            String name = it.next();
+        for (String name : bots.keySet()) {
             Bot bot = bots.get(name);
             sender.sendMessage(ChatColor.AQUA + "--- IRC Info: " + bot.getServer().getName() + " ---");
             sender.sendMessage(ChatColor.AQUA + "Host: " + ChatColor.WHITE + bot.getServer().getHost());

@@ -2,6 +2,7 @@ package jp.commun.minecraft.elchat;
 
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.DynmapChannel;
+import jp.commun.minecraft.elchat.channel.PluginChannel;
 import jp.commun.minecraft.elchat.command.ChannelCommand;
 import jp.commun.minecraft.elchat.command.ElChatCommand;
 import jp.commun.minecraft.elchat.command.IRCCommand;
@@ -181,9 +182,12 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
     {
         Channel c = channelManager.getChannel(channel);
         if (c != null) {
-            Message m = new PluginMessage(message);
-            c.sendMessage(m);
+            c = new PluginChannel(channel);
+            c.addForward(channelManager.getDefaultChannel());
+            channelManager.addChannel(c);
         }
+        Message m = new PluginMessage(message);
+        c.sendMessage(m);
     }
 
     @Override

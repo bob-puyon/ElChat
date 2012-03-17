@@ -336,46 +336,46 @@ public class RomaToHira
 		Boolean converted = false;
 		ArrayList<String> convertedWords = new ArrayList<String>();
 
-		for (int i = 0; i < words.length; i++) {
-			String word = words[i].replaceAll("w+", "w");
-			if (ignoreWords != null && ignoreWords.contains(word.toLowerCase())) {
-				convertedWords.add(word);
-				continue;
-			}
-			
-			StringBuilder sb = new StringBuilder();
-			int wordLen = word.length();
-			for (int j = 0; j < wordLen; j++) {
-				Boolean match = false;
-				
-				for (int k = 4; k > 0; k--) {
-					if (wordLen < j + k) continue;
+        for (String word1 : words) {
+            String word = word1.replaceAll("w+", "w");
+            if (ignoreWords != null && ignoreWords.contains(word.toLowerCase())) {
+                convertedWords.add(word);
+                continue;
+            }
 
-					String s = word.substring(j, j + k).toLowerCase();
-					
-					if (romaTable.containsKey(s)) {
-						String h = romaTable.get(s);
-						sb.append(h);
-						if (!h.equals("っ")) {
-							j += k - 1;
-						}
-						match = converted = true;
-						break;
-					}
-				}
-				
-				if (!match && wordLen > j) sb.append(word.substring(j, j + 1));
-				
-				
-			}
-			
-			String convertedWord = sb.toString();
-			if (kanaWords.contains(convertedWord)) {
-				convertedWords.add(StringUtils.convertHiraToKana(convertedWord));
-			} else {
-				convertedWords.add(convertedWord);
-			}
-		}
+            StringBuilder sb = new StringBuilder();
+            int wordLen = word.length();
+            for (int j = 0; j < wordLen; j++) {
+                Boolean match = false;
+
+                for (int k = 4; k > 0; k--) {
+                    if (wordLen < j + k) continue;
+
+                    String s = word.substring(j, j + k).toLowerCase();
+
+                    if (romaTable.containsKey(s)) {
+                        String h = romaTable.get(s);
+                        sb.append(h);
+                        if (!h.equals("っ")) {
+                            j += k - 1;
+                        }
+                        match = converted = true;
+                        break;
+                    }
+                }
+
+                if (!match && wordLen > j) sb.append(word.substring(j, j + 1));
+
+
+            }
+
+            String convertedWord = sb.toString();
+            if (kanaWords.contains(convertedWord)) {
+                convertedWords.add(StringUtils.convertHiraToKana(convertedWord));
+            } else {
+                convertedWords.add(convertedWord);
+            }
+        }
 		
 		if (converted) {
 			return StringUtils.join(convertedWords, " ");

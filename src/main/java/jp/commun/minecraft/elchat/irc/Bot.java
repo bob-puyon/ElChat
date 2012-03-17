@@ -11,7 +11,6 @@ import org.bukkit.event.Event;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -141,9 +140,8 @@ public class Bot extends IrcAdaptor
     @Override
     public void onQuit(final IrcConnection irc, final User user, String message)
     {
-        Iterator<String> it = server.getChannelNames().iterator();
-        while (it.hasNext()) {
-            IRCQuitEvent event = new IRCQuitEvent(server.getName(), it.next(), user.getNick());
+        for (String s : server.getChannelNames()) {
+            IRCQuitEvent event = new IRCQuitEvent(server.getName(), s, user.getNick());
             ElChatPlugin.getPlugin().getServer().getPluginManager().callEvent(event);
         }
     }

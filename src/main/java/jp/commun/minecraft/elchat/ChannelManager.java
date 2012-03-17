@@ -133,7 +133,7 @@ public class ChannelManager
             int no = Integer.parseInt(name);
             
             return player.getChannel(no);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
         
         if (channels.containsKey(name.toLowerCase())) return channels.get(name.toLowerCase());
