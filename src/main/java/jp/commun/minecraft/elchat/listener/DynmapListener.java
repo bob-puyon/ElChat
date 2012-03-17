@@ -1,7 +1,6 @@
 package jp.commun.minecraft.elchat.listener;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.Log;
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.message.ChatMessage;
 import jp.commun.minecraft.elchat.message.Message;
@@ -31,8 +30,6 @@ public class DynmapListener implements Listener
     {
         if (event.isCancelled()) return;
 
-        Log.info("onDynmapWebChat");
-        
         Message message = new ChatMessage(event.getName(), event.getMessage());
         Channel channel = plugin.getChannelManager().getChannel("dynmap");
         if (channel != null) {

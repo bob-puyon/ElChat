@@ -1,9 +1,6 @@
 package jp.commun.minecraft.elchat;
 
-import jp.commun.minecraft.elchat.channel.Channel;
-import jp.commun.minecraft.elchat.channel.DynmapChannel;
-import jp.commun.minecraft.elchat.channel.GameChannel;
-import jp.commun.minecraft.elchat.channel.IRCChannel;
+import jp.commun.minecraft.elchat.channel.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -66,14 +63,19 @@ public class ChannelManager
         while (it.hasNext()) {
             String name = it.next();
             Channel channel;
+            ConfigurationSection section = config.getConfigurationSection("channels." + name);
+            String type = section.getString("type", "");
+            
             if (channels.containsKey(name)) {
                 channel = channels.get(name);
-            } else if (name.equals("dynmap")) {
+            } else if (type.equals("dynmap")) {
                 channel = new DynmapChannel(name);
+            } else if (type.equals("plugin")) {
+                channel = new PluginChannel(name);
             } else {
                 channel = new GameChannel(name);
             }
-            channel.loadConfig(config.getConfigurationSection("channels." + name));
+            channel.loadConfig(section);
             addChannel(channel);
         }
 
@@ -114,7 +116,7 @@ public class ChannelManager
     public void addChannel(Channel channel)
     {
         if (!channels.containsKey(channel.getName())) {
-            Log.info("ChannelManager addChannel:" + channel.getName());
+            plugin.getLogger().info("ChannelManager addChannel:" + channel.getName()) ;
             channels.put(channel.getName().toLowerCase(), channel);
         }
     }

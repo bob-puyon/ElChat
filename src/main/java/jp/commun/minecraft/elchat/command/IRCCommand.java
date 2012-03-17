@@ -2,10 +2,13 @@ package jp.commun.minecraft.elchat.command;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.irc.Bot;
+import jp.commun.minecraft.util.StringUtils;
 import jp.commun.minecraft.util.command.Command;
 import jp.commun.minecraft.util.command.CommandHandler;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -33,19 +36,16 @@ public class IRCCommand implements CommandHandler
         while (it.hasNext()) {
             String name = it.next();
             Bot bot = bots.get(name);
-            sender.sendMessage(bot.getServer().getName() + ":" + bot.getServer().getHost());
+            sender.sendMessage(ChatColor.AQUA + "--- IRC Info: " + bot.getServer().getName() + " ---");
+            sender.sendMessage(ChatColor.AQUA + "Host: " + ChatColor.WHITE + bot.getServer().getHost());
             if (bot.isConnected()) {
-                sender.sendMessage("Status: connected.");
+                sender.sendMessage(ChatColor.AQUA + "Status: " + ChatColor.WHITE + "connected.");
             } else {
-                sender.sendMessage("Status: disconnected.");
+                sender.sendMessage(ChatColor.AQUA + "Status: " + ChatColor.WHITE + "disconnected.");
             }
 
             Set<String> channels = bot.getServer().getChannels().keySet();
-            Iterator<String> channelIterator = channels.iterator();
-            sender.sendMessage("IRCChannel Count: " + String.valueOf(channels.size()));
-            while (channelIterator.hasNext()) {
-                sender.sendMessage(channelIterator.next());
-            }
+            sender.sendMessage(ChatColor.AQUA + "Channels: " + ChatColor.WHITE + StringUtils.join(new ArrayList<String>(channels), ", "));
         }
     }
 
@@ -53,13 +53,13 @@ public class IRCCommand implements CommandHandler
     public void connect(CommandSender sender, String commandName, String[] args)
     {
         plugin.getIRCManager().connect();
-        sender.sendMessage("connecting...");
+        sender.sendMessage("[ElChat] connecting...");
     }
 
     @Command( names = { "elchat irc disconnect", "irc disconnect"}, permissions = { "elchat.irc.disconnect" })
     public void disconnect(CommandSender sender, String commandName, String[] args)
     {
         plugin.getIRCManager().disconnect();
-        sender.sendMessage("disconnecting...");
+        sender.sendMessage("[ElChat] disconnecting...");
     }
 }

@@ -70,25 +70,26 @@ public class GameChannel extends Channel
     @Override
     public void processMessage(Message message)
     {
-        if (message instanceof ChatMessage) {
-            String formattedMessage = formatMessage((ChatMessage)message);
+        String formattedMessage = formatMessage(message);
             
-            Iterator<ChatPlayer> it = players.values().iterator();
-            while (it.hasNext()) {
-                ChatPlayer recipient = it.next();
-                ChatPlayer sender = ((ChatMessage)message).getPlayer();
-                if (onlyWorld && sender != null && !recipient.getPlayer().getWorld().equals(sender.getPlayer().getWorld())) continue;
-                if (area != 0 && sender != null && recipient.getLocation().distance(sender.getLocation()) > area) continue;
-    
-                String channelNo = "";
-                if (message.getChannel().equals(this)) {
-                    int no = recipient.getChannelNo(this);
-                    if (no != 0) {
-                        channelNo = String.valueOf(no) + ". ";
-                    }
-                }
-                recipient.sendMessage(formattedMessage.replace("{channelno}", channelNo));
+        Iterator<ChatPlayer> it = players.values().iterator();
+        while (it.hasNext()) {
+            ChatPlayer recipient = it.next();
+            ChatPlayer sender = null;
+            if (message instanceof ChatMessage) {
+                sender = ((ChatMessage)message).getPlayer();
             }
+            if (onlyWorld && sender != null && !recipient.getPlayer().getWorld().equals(sender.getPlayer().getWorld())) continue;
+            if (area != 0 && sender != null && recipient.getLocation().distance(sender.getLocation()) > area) continue;
+    
+            String channelNo = "";
+            if (message.getChannel().equals(this)) {
+                int no = recipient.getChannelNo(this);
+                if (no != 0) {
+                    channelNo = String.valueOf(no) + ". ";
+                }
+            }
+            recipient.sendMessage(formattedMessage.replace("{channelno}", channelNo));
         }
     }
 

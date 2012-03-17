@@ -2,7 +2,6 @@ package jp.commun.minecraft.elchat.irc;
 
 import com.sorcix.sirc.*;
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.Log;
 import jp.commun.minecraft.elchat.channel.IRCChannel;
 import jp.commun.minecraft.elchat.event.IRCCommandEvent;
 import jp.commun.minecraft.elchat.event.IRCJoinEvent;
@@ -48,7 +47,7 @@ public class Bot extends IrcAdaptor
     public void connect() throws IOException
     {
         if (isConnected()) return;
-        Log.info("IRC:" + server.getName() + ": connecting " + server.getHost() + "...");
+        ElChatPlugin.getPlugin().getLogger().info("IRC:" + server.getName() + ": connecting " + server.getHost() + "...");
         this.retryEnabled = true;
         try {
             this.connection.connect();
@@ -63,7 +62,7 @@ public class Bot extends IrcAdaptor
     {
         this.retryEnabled = false;
         if (!isConnected()) return;
-        Log.info("IRC:" + server.getName() + ": disconnect from " + server.getHost());
+        ElChatPlugin.getPlugin().getLogger().info("IRC:" + server.getName() + ": disconnect from " + server.getHost());
         this.connection.disconnect();
     }
 
@@ -81,7 +80,7 @@ public class Bot extends IrcAdaptor
     {
 
         for (IRCChannel c: server.getChannels().values()) {
-            Log.info("IRC:" + server.getName() + ": joining " + c.getName());
+            ElChatPlugin.getPlugin().getLogger().info("IRC:" + server.getName() + ": joining " + c.getName());
             Channel channel = connection.createChannel(c.getName());
             channel.join();
             
@@ -100,7 +99,7 @@ public class Bot extends IrcAdaptor
     @Override
     public void onMessage(final IrcConnection irc, final User sender, final com.sorcix.sirc.Channel channel, final String message)
     {
-        Log.info("Bot.onMessage:" + message);
+        ElChatPlugin.getPlugin().getLogger().info("Bot.onMessage:" + message);
         
         String coloredMessage = IRCColor.toGame(message);
         
@@ -121,7 +120,6 @@ public class Bot extends IrcAdaptor
     public void onJoin(final IrcConnection irc, final com.sorcix.sirc.Channel channel, User user)
     {
         if (channel == null) return;
-        if (user == null) Log.info("onJoin user null");
         IRCJoinEvent event = new IRCJoinEvent(server.getName(), channel.getName(), user.getNick());
         ElChatPlugin.getPlugin().getServer().getPluginManager().callEvent(event);
     }

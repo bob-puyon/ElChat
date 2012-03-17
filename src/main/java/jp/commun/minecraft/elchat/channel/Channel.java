@@ -2,7 +2,6 @@ package jp.commun.minecraft.elchat.channel;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.Log;
 import jp.commun.minecraft.elchat.RomaToHira;
 import jp.commun.minecraft.elchat.message.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -70,7 +69,6 @@ public abstract class Channel
     
     public void sendMessage(Message message)
     {
-        Log.info(this.getClass().getName() +  ".sendMessage[" + this.getName() + "]");
         if (message.getChannel() == null) {
             message.setChannel(this);
 
@@ -86,8 +84,6 @@ public abstract class Channel
             }
             
             forward(message);
-        } else {
-            Log.info("originalChannel: " + message.getChannel().getName());
         }
         processMessage(message);
     }
@@ -99,11 +95,8 @@ public abstract class Channel
         Iterator<String> it = forwards.iterator();
         while (it.hasNext()) {
             String channelName = it.next();
-            Log.info("routing nexthop check:" + channelName);
             Channel channel = ElChatPlugin.getPlugin().getChannelManager().getChannel(channelName);
-            if (channel == null) Log.info("getChannel returned null");
             if (channel == null || channel.equals(this)) continue;
-            Log.info("nexthop:" + channel.getName());
             channel.sendMessage(message);
         }
     }

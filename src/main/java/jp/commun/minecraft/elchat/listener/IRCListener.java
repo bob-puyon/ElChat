@@ -1,7 +1,6 @@
 package jp.commun.minecraft.elchat.listener;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.Log;
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.IRCChannel;
 import jp.commun.minecraft.elchat.event.IRCCommandEvent;
@@ -34,28 +33,17 @@ public class IRCListener implements Listener
     @EventHandler
     public void onIRCMessage(IRCMessageEvent event)
     {
-        Log.info("onIRCMessage:" + event.getMessage());
-        /*
-        Message message = new Message(event.getNick(), event.getMessage());
-        Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
-        if (bot != null) {
-            Channel channel = bot.getServer().getChannel(event.getChannel());
-            if (channel != null) channel.sendMessage(message);
-        }
-        */
     }
     
     @EventHandler
     public void onIRCCommand(IRCCommandEvent event)
     {
-        Log.info("onIRCCommand:" + event.getCommandName());
         if (event.getCommandName().equals("say")) {
             Message message = new ChatMessage(event.getNick(), StringUtils.join(event.getArgs(), " "));
             Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
             if (bot != null) {
                 Channel channel = bot.getServer().getChannel(event.getChannel());
                 if (channel != null) channel.sendMessage(message);
-                if (channel == null) Log.info("channel is null!");
             }
         }
     }

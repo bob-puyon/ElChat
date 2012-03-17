@@ -72,15 +72,14 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
         
         Plugin dynmapPlugin = pm.getPlugin("dynmap");
         if (dynmapPlugin != null) {
-            Log.info("found dynmap!");
             this.setDynmapPlugin(dynmapPlugin);
             if (dynmapAPI != null) {
-                Log.info("found dynmap API!");
+                getLogger().info("found dynmap API!");
                 pm.registerEvents(new DynmapListener(this), this);
             }
         }
-		
-		Log.info("ElChat enabled!");
+
+        getLogger().info("ElChat enabled!");
 	}
 
     @Override
@@ -90,7 +89,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
 
         this.ircManager.disconnect();
 
-		Log.info("ElChat disabled!");
+        getLogger().info("ElChat disabled!");
 	}
 	
 	@Override
@@ -103,40 +102,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
         } catch (CommandException e) {
             sender.sendMessage(e.getMessage());
         }
-        /*
-		if (sender instanceof ConsoleCommandSender) {
-            if (!command.getName().equals("elchat")) return false;
 
-            if (args.length == 0) {
-            } else if (args[0].equals("irc")) {
-                if (args.length > 2) {
-                    
-                } else {
-                    Map<String, Bot> bots = this.ircManager.getBots();
-                    Iterator<String> it = bots.keySet().iterator();
-                    while (it.hasNext()) {
-                        String name = it.next();
-                        Bot bot = bots.get(name);
-                        sender.sendMessage(bot.getServer().getName() + ":" + bot.getServer().getHost());
-                        if (bot.isConnected()) {
-                            sender.sendMessage("Status: connected.");    
-                        } else {
-                            sender.sendMessage("Status: disconnected.");
-                        }
-
-                        Set<String> channels = bot.getServer().getChannels().keySet();
-                        Iterator<String> channelIterator = channels.iterator();
-                        sender.sendMessage("IRCChannel Count: " + String.valueOf(channels.size()));
-                        while (channelIterator.hasNext()) {
-                            sender.sendMessage(channelIterator.next());
-                        }
-                    }
-                }
-            }  else if (args[0].equals("reload")) {
-            	plugin.reloadConfig();
-            }
-        }
-        */
     	return false;
     }
 	
@@ -149,7 +115,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
 	public void setPermissionsExPlugin(Plugin permissionsExPlugin)
     {
         if (permissionsExPlugin != null) {
-            Log.info("PermissionsEx detected! using: " + permissionsExPlugin.getDescription().getFullName());
+            getLogger().info("PermissionsEx detected! using: " + permissionsExPlugin.getDescription().getFullName());
             this.permissionsExManager = PermissionsEx.getPermissionManager();
         } else {
         	this.permissionsExManager = null;
@@ -167,7 +133,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
             dynmapAPI = (DynmapAPI)dynmapPlugin;
             Channel channel = getChannelManager().getChannel("dynmap");
             if (channel == null) {
-                Log.info("adding dynmap channel");
+                plugin.getLogger().info("adding dynmap channel");
                 channel = new DynmapChannel("dynmap");
                 channel.addForward(getChannelManager().getDefaultChannel());
                 getChannelManager().addChannel(channel);
@@ -218,5 +184,11 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
             Message m = new PluginMessage(message);
             c.sendMessage(m);
         }
+    }
+
+    @Override
+    public String getVersion()
+    {
+        return getDescription().getVersion();
     }
 }

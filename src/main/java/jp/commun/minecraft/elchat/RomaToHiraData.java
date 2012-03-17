@@ -50,7 +50,7 @@ public class RomaToHiraData
                 ignoreWords.add(line);
             }
         } catch (Exception e) {
-            Log.severe("Could not load file: " + ignoreWordsFile.getName() + " " + e.getMessage());
+            plugin.getLogger().severe("Could not load file: " + ignoreWordsFile.getName() + " " + e.getMessage());
         }
 
         try {
@@ -63,7 +63,7 @@ public class RomaToHiraData
                 kanaWords.add(line);
             }
         } catch (Exception e) {
-            Log.severe("Could not load file: " + kanaWordsFile.getName() + " " + e.getMessage());
+            plugin.getLogger().severe("Could not load file: " + kanaWordsFile.getName() + " " + e.getMessage());
         }
     }
     
@@ -92,13 +92,13 @@ public class RomaToHiraData
                 os.write(buf, 0, len);
             }
         } catch (Exception e) {
-            Log.severe("Could not load file: " + file.getName());
+            plugin.getLogger().severe("Could not load file: " + file.getName());
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    Log.severe("Could not load file: " + file.getName());
+                    plugin.getLogger().severe("Could not load file: " + file.getName());
                 }
             }
 
@@ -106,7 +106,7 @@ public class RomaToHiraData
                 try {
                     os.close();
                 } catch (IOException e) {
-                    Log.severe("Could not load file: " + file.getName());
+                    plugin.getLogger().severe("Could not load file: " + file.getName());
                 }
             }
         }

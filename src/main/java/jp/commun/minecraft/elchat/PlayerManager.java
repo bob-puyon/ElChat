@@ -59,7 +59,6 @@ public class PlayerManager
     
     protected void loadPlayer(Player player)
     {
-        Log.info("loadPlayer");
         ChatPlayer chatPlayer;
         if (!this.players.containsKey(player.getName())) {
             chatPlayer = new ChatPlayer(player);
@@ -76,9 +75,7 @@ public class PlayerManager
             chatPlayer = players.get(player.getName());
         }
         
-        Log.info("autojoining");
         for (Channel channel: plugin.getChannelManager().getChannels().values()) {
-            Log.info("check channel:" + channel.getName());
             if (channel.isAutoJoin() && channel instanceof GameChannel) {
                 if (!chatPlayer.hasChannel(channel)) chatPlayer.addChannel(channel);
                 channel.join(chatPlayer);

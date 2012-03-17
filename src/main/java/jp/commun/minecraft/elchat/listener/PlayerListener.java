@@ -1,7 +1,6 @@
 package jp.commun.minecraft.elchat.listener;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.Log;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,7 +20,6 @@ public class PlayerListener implements Listener
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
     {
-        Log.info("onPlayerJoin");
         plugin.getPlayerManager().onPlayerJoin(event);
     }
 

@@ -9,6 +9,7 @@ import jp.commun.minecraft.elchat.message.Message;
 import jp.commun.minecraft.util.StringUtils;
 import jp.commun.minecraft.util.command.Command;
 import jp.commun.minecraft.util.command.CommandHandler;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
@@ -74,12 +75,38 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
+    @Command( names = { "channel info", "ch info" }, permissions = { "elchat.channel.info" }, min = 1)
     public void info(CommandSender sender, String commandName, String[] args)
     {
+        Channel channel;
+        ChatPlayer player = null;
+        if (sender instanceof ConsoleCommandSender) {
+            channel = plugin.getChannelManager().getChannel(args[0]);
+        } else {
+            player = plugin.getPlayerManager().getPlayer(sender.getName());
+            channel = plugin.getChannelManager().getChannel(args[0], player);
+        }
 
+        if (channel == null || !(channel instanceof GameChannel)) {
+            sender.sendMessage("no such channel.");
+            return;
+        }
+
+        sender.sendMessage(ChatColor.AQUA + "--- Channel Info ---");
+        sender.sendMessage(ChatColor.AQUA + "Name: " + ChatColor.WHITE + channel.getName());
+        sender.sendMessage(ChatColor.AQUA + "Title: " + ChatColor.WHITE + channel.getTitle());
+
+        GameChannel gameChannel = (GameChannel)channel;
+        sender.sendMessage(ChatColor.AQUA + "Moderation: " + ChatColor.WHITE + String.valueOf(gameChannel.isModeration()));
+        if (gameChannel.getOwner() != null) {
+            sender.sendMessage(ChatColor.AQUA + "Owner: " + ChatColor.WHITE + gameChannel.getOwner());
+        } else {
+            sender.sendMessage(ChatColor.AQUA + "Owner: " + ChatColor.WHITE + "none");
+        }
+        sender.sendMessage(ChatColor.AQUA + "Moderators: " + ChatColor.WHITE + StringUtils.join(gameChannel.getModerators(), ", "));
     }
 
-    @Command( names = { "channel who", "ch who" }, permissions = { "elchat.channel.who" })
+    @Command( names = { "channel who", "ch who" }, permissions = { "elchat.channel.who" }, min = 1)
     public void who(CommandSender sender, String commandName, String[] args)
     {
         Channel channel;
@@ -93,9 +120,10 @@ public class ChannelCommand implements CommandHandler
 
         if (channel == null || !(channel instanceof GameChannel)) {
             sender.sendMessage("no such channel.");
+            return;
         }
 
-        sender.sendMessage(StringUtils.join((String[])((GameChannel)channel).getPlayers().keySet().toArray(), ", "));
+        sender.sendMessage("[" + channel.getTitle() + "] " + StringUtils.join(new ArrayList<String>(((GameChannel)channel).getPlayers().keySet()), ", "));
     }
 
     @Command( names = { "channel join", "ch join", "join" }, permissions = { "elchat.channel.join" }, allowConsole = false, min = 1)

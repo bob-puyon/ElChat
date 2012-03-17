@@ -1,7 +1,6 @@
 package jp.commun.minecraft.elchat.irc;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.Log;
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.IRCChannel;
 import jp.commun.minecraft.elchat.message.Message;
@@ -56,6 +55,9 @@ public class IRCManager
     public void connect()
     {
         if (this.bots.size() > 0 && !isConnectScheduled) {
+            for (Bot bot: bots.values()) {
+                bot.setRetryEnabled(true);
+            }
             isConnectScheduled = true;
             plugin.getServer().getScheduler().scheduleAsyncDelayedTask(this.plugin, new Runnable(){
                 @Override
@@ -101,11 +103,13 @@ public class IRCManager
             String name = it.next();
             Bot bot = bots.get(name);
             if (bot.isConnected() || !bot.isRetryEnabled()) continue;
+            
+            plugin.getLogger().info("connecting " + bot.getServer().getHost());
 
             try {
                 bot.connect();
             } catch (IOException e) {
-                Log.info("IRC: " + bot.getServer().getHost() + " connect failed.");
+                plugin.getLogger().info("IRC: " + bot.getServer().getHost() + " connect failed.");
                 
                 e.printStackTrace();
                 needReconnect = true;
