@@ -10,4 +10,9 @@ block
 enchant
 sword
 door
+admin
+wb
+welcome
+back
+orz
 

@@ -115,7 +115,7 @@ public class ChannelManager
     
     public void addChannel(Channel channel)
     {
-        if (!channels.containsKey(channel.getName())) {
+        if (!channels.containsKey(channel.getName().toLowerCase())) {
             plugin.getLogger().info("ChannelManager addChannel:" + channel.getName()) ;
             channels.put(channel.getName().toLowerCase(), channel);
         }

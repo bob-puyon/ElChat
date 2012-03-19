@@ -181,7 +181,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
     public void sendMessage(String channel, String message)
     {
         Channel c = channelManager.getChannel(channel);
-        if (c != null) {
+        if (c == null) {
             c = new PluginChannel(channel);
             c.addForward(channelManager.getDefaultChannel());
             channelManager.addChannel(c);
