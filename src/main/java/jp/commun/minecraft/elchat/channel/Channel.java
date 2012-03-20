@@ -85,12 +85,15 @@ public abstract class Channel
             
             forward(message);
         }
-        processMessage(message);
+        
+        if (!(message instanceof AnnounceMessage) || !message.isForwardOnly()) {
+            processMessage(message);
+        }
     }
     
     protected void forward(Message message)
     {
-        if (!message.isForwadable()) return;
+        if (!message.isForwardable()) return;
         // routing another channel
         Iterator<String> it = forwards.iterator();
         while (it.hasNext()) {
@@ -266,10 +269,11 @@ public abstract class Channel
         sendMessage(m);
     }
 
-    public  void announce(String message)
+    public void announce(String message)
     {
-        Message m = new ChannelMessage(message);
-        m.setForwadable(isForwardAnnounce());
+        Message m = new AnnounceMessage(message);
+        m.setForwardable(forwardAnnounce);
+        m.setForwardOnly(!announce);
         sendMessage(m);
     }
 }

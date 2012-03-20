@@ -71,7 +71,7 @@ public class GameChannel extends Channel
     public void processMessage(Message message)
     {
         String formattedMessage = formatMessage(message);
-            
+        // forwardをチェックしていないのでannounceが流れちゃう
         Iterator<ChatPlayer> it = players.values().iterator();
         while (it.hasNext()) {
             ChatPlayer recipient = it.next();
@@ -108,23 +108,7 @@ public class GameChannel extends Channel
 
         player.sendMessage("Joined Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
 
-        Message message = new ChannelMessage(player.getName() + " joined channel.");
-        message.setForwadable(forwardAnnounce);
-        sendMessage(message);
-
-        if (announce) {
-            String formattedMessage = formatMessage(message);
-
-            for (ChatPlayer p: players.values()) {
-                String channelNo = "";
-                int no = p.getChannelNo(this);
-                if (no != 0) {
-                    channelNo = String.valueOf(no) + ". ";
-                }
-
-                p.sendMessage(formattedMessage.replace("{channelno}", channelNo));
-            }
-        }
+        announce(player.getName() + " joined channel.");
     }
 
     @Override
@@ -133,23 +117,7 @@ public class GameChannel extends Channel
         if (!players.containsKey(player.getName())) return;
         player.sendMessage("Left Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
 
-        Message message = new ChannelMessage(player.getName() + " left channel.");
-        message.setForwadable(forwardAnnounce);
-        sendMessage(message);
-
-        if (announce) {
-            String formattedMessage = formatMessage(message);
-
-            for (ChatPlayer p: players.values()) {
-                String channelNo = "";
-                int no = p.getChannelNo(this);
-                if (no != 0) {
-                    channelNo = String.valueOf(no) + ". ";
-                }
-
-                p.sendMessage(formattedMessage.replace("{channelno}", channelNo));
-            }
-        }
+        announce(player.getName() + " left channel.");
 
         players.remove(player.getName());
     }

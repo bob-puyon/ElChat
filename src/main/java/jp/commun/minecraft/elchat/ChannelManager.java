@@ -23,7 +23,7 @@ public class ChannelManager
 {
     private final ElChatPlugin plugin;
     private final File configFile;
-    private final FileConfiguration config;
+    private FileConfiguration config;
     private String defaultChannel;
     private Map<String, Channel> channels;
 
@@ -31,12 +31,12 @@ public class ChannelManager
     {
         this.plugin = plugin;
         this.configFile = new File(plugin.getDataFolder(), "channels.yml");
-        this.config = new YamlConfiguration();
         channels = new HashMap<String, Channel>();
     }
 
     public void loadConfig()
     {
+        config = new YamlConfiguration();
         if (configFile.exists()) {
             try {
                 this.config.load(configFile);

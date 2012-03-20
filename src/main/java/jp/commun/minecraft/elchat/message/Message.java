@@ -12,7 +12,8 @@ import jp.commun.minecraft.elchat.channel.Channel;
 public abstract class Message
 {
     protected Channel channel;
-    protected boolean forwadable = true;
+    protected boolean forwardable = true;
+    protected boolean forwardOnly = false;
 
     public Channel getChannel() {
         return channel;
@@ -22,11 +23,19 @@ public abstract class Message
         this.channel = channel;
     }
 
-    public boolean isForwadable() {
-        return forwadable;
+    public boolean isForwardable() {
+        return forwardable;
     }
 
-    public void setForwadable(boolean forwadable) {
-        this.forwadable = forwadable;
+    public void setForwardable(boolean forwardable) {
+        this.forwardable = forwardable;
+    }
+
+    public boolean isForwardOnly() {
+        return forwardOnly;
+    }
+
+    public void setForwardOnly(boolean forwardOnly) {
+        this.forwardOnly = forwardOnly;
     }
 }

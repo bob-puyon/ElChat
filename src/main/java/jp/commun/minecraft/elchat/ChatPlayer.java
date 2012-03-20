@@ -138,6 +138,9 @@ public class ChatPlayer
 
     public Channel getCurrentChannel()
     {
+        if (currentChannel == null) {
+            currentChannel = ElChatPlugin.getPlugin().getChannelManager().getDefaultChannel();
+        }
         return currentChannel;
     }
 
@@ -151,5 +154,15 @@ public class ChatPlayer
     public boolean hasChannel(Channel channel)
     {
         return channels.containsValue(channel);
+    }
+
+    @Override
+    public int hashCode() {
+        return player.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return player.equals(obj);
     }
 }
