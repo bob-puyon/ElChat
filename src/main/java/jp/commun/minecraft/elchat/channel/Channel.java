@@ -95,6 +95,7 @@ public abstract class Channel
     {
         if (!message.isForwardable()) return;
         // routing another channel
+        message.setForwardOnly(false);
         Iterator<String> it = forwards.iterator();
         while (it.hasNext()) {
             String channelName = it.next();

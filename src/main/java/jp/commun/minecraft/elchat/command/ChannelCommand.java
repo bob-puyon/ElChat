@@ -134,7 +134,7 @@ public class ChannelCommand implements CommandHandler
         if (channel != null && channel instanceof GameChannel) {
             channel.join(player);
         } else if (channel == null && sender.hasPermission("elchat.channel.create")) {
-            channel = new GameChannel(args[1]);
+            channel = new GameChannel(args[0]);
             ((GameChannel)channel).setOwner(player.getName());
             plugin.getChannelManager().addChannel(channel);
             channel.join(player);
