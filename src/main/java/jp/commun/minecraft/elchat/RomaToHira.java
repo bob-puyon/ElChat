@@ -195,6 +195,7 @@ public class RomaToHira
 		put("nyu", "にゅ");
 		put("nye", "にぇ");
 		put("nyo", "にょ");
+        put("nni", "んに");
 		put("ha", "は");
 		put("hi", "ひ");
 		put("hu", "ふ");

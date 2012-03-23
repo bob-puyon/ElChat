@@ -9,10 +9,21 @@ house
 block
 enchant
 sword
+pickaxe
+axe
+shovel
 door
 admin
 wb
 welcome
 back
 orz
+plugin
+bukkit
+hello
+chest
+lock
+chat
+skype
+
 
