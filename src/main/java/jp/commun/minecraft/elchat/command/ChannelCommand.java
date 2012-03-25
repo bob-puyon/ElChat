@@ -32,18 +32,15 @@ import org.bukkit.command.ConsoleCommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelCommand implements CommandHandler
-{
+public class ChannelCommand implements CommandHandler {
     private final ElChatPlugin plugin;
 
-    public ChannelCommand(ElChatPlugin plugin)
-    {
+    public ChannelCommand(ElChatPlugin plugin) {
         this.plugin = plugin;
     }
 
-    @Command( names = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }, allowConsole = false)
-    public void message(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}, allowConsole = false)
+    public void message(CommandSender sender, String commandName, String[] args) {
         ChatPlayer player = plugin.getPlayerManager().getPlayer(sender.getName());
         int channelNo = Integer.parseInt(commandName);
         Channel channel = player.getChannel(channelNo);
@@ -51,7 +48,7 @@ public class ChannelCommand implements CommandHandler
             sender.sendMessage("No such channel.");
             return;
         }
-        
+
         if (args.length > 0) {
             String textMessage = StringUtils.join(args, " ");
             Message message = new ChatMessage(player, textMessage);
@@ -61,22 +58,21 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
-    @Command( names = { "channel list", "ch list" }, permissions = { "elchat.channel.list" }, allowConsole = false)
-    public void list(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel list", "ch list"}, permissions = {"elchat.channel.list"}, allowConsole = false)
+    public void list(CommandSender sender, String commandName, String[] args) {
         ChatPlayer player = plugin.getPlayerManager().getPlayer(sender.getName());
 
         if (args.length > 0) {
             Channel channel = plugin.getChannelManager().getChannel(args[1], player);
             if (channel != null && channel instanceof GameChannel) {
-                sender.sendMessage("[" + player.getChannelNo(channel) + ". " + StringUtils.join((String[])((GameChannel) channel).getPlayers().keySet().toArray(), ", "));
+                sender.sendMessage("[" + player.getChannelNo(channel) + ". " + StringUtils.join((String[]) ((GameChannel) channel).getPlayers().keySet().toArray(), ", "));
             } else {
                 sender.sendMessage("no such channel.");
             }
         } else {
             int i = 1;
             List<String> channels = new ArrayList<String>();
-            for (Channel channel: player.getChannels().values()) {
+            for (Channel channel : player.getChannels().values()) {
                 channels.add("[" + String.valueOf(i) + ". " + channel.getTitle() + "]");
                 ++i;
             }
@@ -84,9 +80,8 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
-    @Command( names = { "channel info", "ch info" }, permissions = { "elchat.channel.info" }, min = 1)
-    public void info(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel info", "ch info"}, permissions = {"elchat.channel.info"}, min = 1)
+    public void info(CommandSender sender, String commandName, String[] args) {
         Channel channel;
         ChatPlayer player = null;
         if (sender instanceof ConsoleCommandSender) {
@@ -105,7 +100,7 @@ public class ChannelCommand implements CommandHandler
         sender.sendMessage(ChatColor.AQUA + "Name: " + ChatColor.WHITE + channel.getName());
         sender.sendMessage(ChatColor.AQUA + "Title: " + ChatColor.WHITE + channel.getTitle());
 
-        GameChannel gameChannel = (GameChannel)channel;
+        GameChannel gameChannel = (GameChannel) channel;
         sender.sendMessage(ChatColor.AQUA + "Moderation: " + ChatColor.WHITE + String.valueOf(gameChannel.isModeration()));
         if (gameChannel.getOwner() != null) {
             sender.sendMessage(ChatColor.AQUA + "Owner: " + ChatColor.WHITE + gameChannel.getOwner());
@@ -115,9 +110,8 @@ public class ChannelCommand implements CommandHandler
         sender.sendMessage(ChatColor.AQUA + "Moderators: " + ChatColor.WHITE + StringUtils.join(gameChannel.getModerators(), ", "));
     }
 
-    @Command( names = { "channel who", "ch who" }, permissions = { "elchat.channel.who" }, min = 1)
-    public void who(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel who", "ch who"}, permissions = {"elchat.channel.who"}, min = 1)
+    public void who(CommandSender sender, String commandName, String[] args) {
         Channel channel;
         ChatPlayer player = null;
         if (sender instanceof ConsoleCommandSender) {
@@ -132,19 +126,18 @@ public class ChannelCommand implements CommandHandler
             return;
         }
 
-        sender.sendMessage("[" + channel.getTitle() + "] " + StringUtils.join(new ArrayList<String>(((GameChannel)channel).getPlayers().keySet()), ", "));
+        sender.sendMessage("[" + channel.getTitle() + "] " + StringUtils.join(new ArrayList<String>(((GameChannel) channel).getPlayers().keySet()), ", "));
     }
 
-    @Command( names = { "channel join", "ch join", "join" }, permissions = { "elchat.channel.join" }, allowConsole = false, min = 1)
-    public void join(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel join", "ch join", "join"}, permissions = {"elchat.channel.join"}, allowConsole = false, min = 1)
+    public void join(CommandSender sender, String commandName, String[] args) {
         Channel channel = plugin.getChannelManager().getChannel(args[0]);
         ChatPlayer player = plugin.getPlayerManager().getPlayer(sender.getName());
         if (channel != null && channel instanceof GameChannel) {
             channel.join(player);
         } else if (channel == null && sender.hasPermission("elchat.channel.create")) {
             channel = new GameChannel(args[0]);
-            ((GameChannel)channel).setOwner(player.getName());
+            ((GameChannel) channel).setOwner(player.getName());
             plugin.getChannelManager().addChannel(channel);
             channel.join(player);
         } else {
@@ -152,9 +145,8 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
-    @Command( names = { "channel leave", "channel exit", "ch leave", "ch exit", "leave" }, permissions = { "elchat.channel.leave" }, allowConsole = false, min = 1)
-    public void leave(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel leave", "channel exit", "ch leave", "ch exit", "leave"}, permissions = {"elchat.channel.leave"}, allowConsole = false, min = 1)
+    public void leave(CommandSender sender, String commandName, String[] args) {
         ChatPlayer player = plugin.getPlayerManager().getPlayer(sender.getName());
         Channel channel = plugin.getChannelManager().getChannel(args[0], player);
         if (channel != null && channel instanceof GameChannel) {
@@ -165,9 +157,8 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
-    @Command( names = { "channel ban", "ch ban" }, permissions = { "elchat.channel.ban" }, min = 2)
-    public void ban(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel ban", "ch ban"}, permissions = {"elchat.channel.ban"}, min = 2)
+    public void ban(CommandSender sender, String commandName, String[] args) {
         Channel channel;
         ChatPlayer player = null;
         if (sender instanceof ConsoleCommandSender) {
@@ -182,7 +173,7 @@ public class ChannelCommand implements CommandHandler
             return;
         }
 
-        if (player != null && !((GameChannel)channel).isOwner(player) && !((GameChannel) channel).isModerator(player)) {
+        if (player != null && !((GameChannel) channel).isOwner(player) && !((GameChannel) channel).isModerator(player)) {
             sender.sendMessage("You are not the channel owner or moderator.");
             return;
         }
@@ -197,37 +188,31 @@ public class ChannelCommand implements CommandHandler
         channel.announce(String.format("Player {0} banned by {1}.", targetPlayer.getName(), sender.getName()));
     }
 
-    @Command( names = { "channel unban", "ch unban" }, permissions = { "elchat.channel.unban" }, min = 2)
-    public void unban(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel unban", "ch unban"}, permissions = {"elchat.channel.unban"}, min = 2)
+    public void unban(CommandSender sender, String commandName, String[] args) {
 
     }
 
-    public void mute(CommandSender sender, String commandName, String[] args)
-    {
+    public void mute(CommandSender sender, String commandName, String[] args) {
 
     }
 
-    public void unmute(CommandSender sender, String commandName, String[] args)
-    {
+    public void unmute(CommandSender sender, String commandName, String[] args) {
 
     }
 
-    @Command( names = { "channel mod", "ch mod" }, permissions = { "elchat.channel.moderator" }, min = 2)
-    public void moderator(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel mod", "ch mod"}, permissions = {"elchat.channel.moderator"}, min = 2)
+    public void moderator(CommandSender sender, String commandName, String[] args) {
 
     }
 
-    @Command( names = { "channel unmod", "ch unmod" }, permissions = { "elchat.channel.unmoderator" }, min = 2)
-    public void unmoderator(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel unmod", "ch unmod"}, permissions = {"elchat.channel.unmoderator"}, min = 2)
+    public void unmoderator(CommandSender sender, String commandName, String[] args) {
 
     }
 
-    @Command( names = { "channel moderation", "ch moderation" }, permissions = { "elchat.channel.moderation" }, min = 2)
-    public void moderation(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel moderation", "ch moderation"}, permissions = {"elchat.channel.moderation"}, min = 2)
+    public void moderation(CommandSender sender, String commandName, String[] args) {
         Channel channel;
         ChatPlayer player = null;
         if (sender instanceof ConsoleCommandSender) {
@@ -242,7 +227,7 @@ public class ChannelCommand implements CommandHandler
             return;
         }
 
-        if (player != null && !((GameChannel)channel).isOwner(player)) {
+        if (player != null && !((GameChannel) channel).isOwner(player)) {
             sender.sendMessage("You are not the channel owner.");
             return;
         }
@@ -255,9 +240,8 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
-    @Command( names = { "channel owner", "ch owner" }, permissions = { "elchat.channel.owner" }, min = 1, max = 2)
-    public void owner(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel owner", "ch owner"}, permissions = {"elchat.channel.owner"}, min = 1, max = 2)
+    public void owner(CommandSender sender, String commandName, String[] args) {
         Channel channel;
         ChatPlayer player = null;
         if (sender instanceof ConsoleCommandSender) {
@@ -266,14 +250,14 @@ public class ChannelCommand implements CommandHandler
             player = plugin.getPlayerManager().getPlayer(sender.getName());
             channel = plugin.getChannelManager().getChannel(args[0], player);
         }
-        
+
         if (channel == null || !(channel instanceof GameChannel)) {
             sender.sendMessage("no such channel.");
             return;
         }
-        
+
         if (args.length == 2) {
-            if (player != null && !((GameChannel)channel).isOwner(player)) {
+            if (player != null && !((GameChannel) channel).isOwner(player)) {
                 sender.sendMessage("You are not the channel owner.");
                 return;
             }
@@ -288,9 +272,8 @@ public class ChannelCommand implements CommandHandler
         }
     }
 
-    @Command( names = { "channel set", "ch set" }, permissions = { "elchat.channel.set" }, min = 3)
-    public void set(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"channel set", "ch set"}, permissions = {"elchat.channel.set"}, min = 3)
+    public void set(CommandSender sender, String commandName, String[] args) {
         if (sender instanceof ConsoleCommandSender) {
             Channel channel = plugin.getChannelManager().getChannel(args[0]);
             if (channel != null) {

@@ -21,18 +21,15 @@ import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.message.Message;
 import org.dynmap.DynmapAPI;
 
-public class DynmapChannel extends Channel
-{
-    public DynmapChannel(String name)
-    {
+public class DynmapChannel extends Channel {
+    public DynmapChannel(String name) {
         super(name);
 
         this.type = "dynmap";
     }
 
     @Override
-    public void processMessage(Message message)
-    {
+    public void processMessage(Message message) {
 
         if (!message.getChannel().equals(this)) {
             DynmapAPI dynmapAPI = ElChatPlugin.getPlugin().getDynmapAPI();

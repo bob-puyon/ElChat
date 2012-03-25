@@ -105,7 +105,9 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-                        <goals><goal>proguard</goal></goals>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
                     </execution>
                 </executions>
                 <configuration>
@@ -115,7 +117,9 @@
                         <option>-keepattributes **</option>
                         <option>-keep public class * extends org.bukkit.plugin.java.JavaPlugin { *; }</option>
                         <option>-keepclassmembers class * implements org.bukkit.event.Listener { *; }</option>
-                        <option>-keepclassmembers class * implements jp.commun.minecraft.util.command.CommandHandler { *; }</option>
+                        <option>-keepclassmembers class * implements jp.commun.minecraft.util.command.CommandHandler {
+                            *; }
+                        </option>
                     </options>
                     <libs>
                         <lib>${java.home}/lib/rt.jar</lib>

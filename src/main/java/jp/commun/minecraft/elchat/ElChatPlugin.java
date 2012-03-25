@@ -42,9 +42,8 @@ import org.dynmap.DynmapAPI;
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-public class ElChatPlugin extends JavaPlugin implements ElChatAPI
-{
-	private static ElChatPlugin plugin;
+public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
+    private static ElChatPlugin plugin;
     private CommandManager commandManager;
     private IRCManager ircManager;
     private PlayerManager playerManager;
@@ -53,22 +52,23 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
 
     private PermissionManager permissionsExManager;
     private DynmapAPI dynmapAPI;
-    
-	@Override
-	public void onEnable()
-	{
-		plugin = this;
-		
-		loadConfiguration();
+
+    @Override
+    public void onEnable() {
+        plugin = this;
+
+        loadConfiguration();
 
         commandManager = new CommandManager();
         commandManager.register(new ElChatCommand(this));
         commandManager.register(new IRCCommand(this));
         commandManager.register(new ChannelCommand(this));
 
-        playerManager = new PlayerManager(this);
         channelManager = new ChannelManager(this);
         channelManager.loadConfig();
+
+        playerManager = new PlayerManager(this);
+        playerManager.loadConfig();
 
         romaToHiraData = new RomaToHiraData(this);
         romaToHiraData.loadConfig();
@@ -76,17 +76,17 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
         ircManager = new IRCManager(this);
         ircManager.connect();
 
-		PluginManager pm = getServer().getPluginManager();
-		
-		pm.registerEvents(new PlayerListener(this), this);
-		pm.registerEvents(new ServerListener(this), this);
+        PluginManager pm = getServer().getPluginManager();
+
+        pm.registerEvents(new PlayerListener(this), this);
+        pm.registerEvents(new ServerListener(this), this);
         pm.registerEvents(new IRCListener(this), this);
-		
-		Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
+
+        Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
         if (permissionsExPlugin != null) {
             this.setPermissionsExPlugin(permissionsExPlugin);
         }
-        
+
         Plugin dynmapPlugin = pm.getPlugin("dynmap");
         if (dynmapPlugin != null) {
             this.setDynmapPlugin(dynmapPlugin);
@@ -97,21 +97,21 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
         }
 
         getLogger().info("ElChat enabled!");
-	}
+    }
 
     @Override
-	public void onDisable()
-	{
-		plugin.saveConfig();
+    public void onDisable() {
+        channelManager.saveConfig();
+        playerManager.saveConfig();
+        plugin.saveConfig();
 
         this.ircManager.disconnect();
 
         getLogger().info("ElChat disabled!");
-	}
-	
-	@Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
-    {
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         try {
             commandManager.execute(sender, command, args);
         } catch (CommandPermissionException e) {
@@ -120,34 +120,30 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
             sender.sendMessage(e.getMessage());
         }
 
-    	return false;
+        return false;
     }
-	
 
-	public static ElChatPlugin getPlugin()
-	{
-		return plugin;
-	}
-	
-	public void setPermissionsExPlugin(Plugin permissionsExPlugin)
-    {
+
+    public static ElChatPlugin getPlugin() {
+        return plugin;
+    }
+
+    public void setPermissionsExPlugin(Plugin permissionsExPlugin) {
         if (permissionsExPlugin != null) {
             getLogger().info("PermissionsEx detected! using: " + permissionsExPlugin.getDescription().getFullName());
             this.permissionsExManager = PermissionsEx.getPermissionManager();
         } else {
-        	this.permissionsExManager = null;
+            this.permissionsExManager = null;
         }
     }
-	
-	public PermissionManager getPermissionsExManager()
-	{
-		return this.permissionsExManager;
-	}
 
-    private void setDynmapPlugin(Plugin dynmapPlugin)
-    {
-        if (dynmapPlugin instanceof  DynmapAPI) {
-            dynmapAPI = (DynmapAPI)dynmapPlugin;
+    public PermissionManager getPermissionsExManager() {
+        return this.permissionsExManager;
+    }
+
+    private void setDynmapPlugin(Plugin dynmapPlugin) {
+        if (dynmapPlugin instanceof DynmapAPI) {
+            dynmapAPI = (DynmapAPI) dynmapPlugin;
             Channel channel = getChannelManager().getChannel("dynmap");
             if (channel == null) {
                 plugin.getLogger().info("adding dynmap channel");
@@ -160,22 +156,19 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
         }
     }
 
-    public DynmapAPI getDynmapAPI()
-    {
+    public DynmapAPI getDynmapAPI() {
         return dynmapAPI;
     }
-	
-	public void loadConfiguration()
-	{
-		FileConfiguration config = plugin.getConfig();
-		config.options().copyDefaults(true);
-		plugin.saveConfig();
-	}
 
-	public void disablePlugin()
-	{
-		this.getPluginLoader().disablePlugin(this);
-	}
+    public void loadConfiguration() {
+        FileConfiguration config = plugin.getConfig();
+        config.options().copyDefaults(true);
+        plugin.saveConfig();
+    }
+
+    public void disablePlugin() {
+        this.getPluginLoader().disablePlugin(this);
+    }
 
     public IRCManager getIRCManager() {
         return ircManager;
@@ -194,8 +187,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
     }
 
     @Override
-    public void sendMessage(String channel, String message)
-    {
+    public void sendMessage(String channel, String message) {
         Channel c = channelManager.getChannel(channel);
         if (c == null) {
             c = new PluginChannel(channel);
@@ -207,8 +199,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI
     }
 
     @Override
-    public String getVersion()
-    {
+    public String getVersion() {
         return getDescription().getVersion();
     }
 }

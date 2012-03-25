@@ -22,22 +22,19 @@ import jp.commun.minecraft.elchat.message.ChatMessage;
 import jp.commun.minecraft.elchat.message.Message;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class IRCChannel extends Channel
-{
+public class IRCChannel extends Channel {
     private boolean relay = false;
     private boolean gameAnnounce = true;
     private boolean ircAnnounce = false;
     private boolean relayAnnounce = true;
     private com.sorcix.sirc.Channel serverChannel;
 
-    public IRCChannel(String name)
-    {
+    public IRCChannel(String name) {
         super(name);
     }
 
     @Override
-    public void loadConfig(ConfigurationSection section)
-    {
+    public void loadConfig(ConfigurationSection section) {
         super.loadConfig(section);
         gameAnnounce = section.getBoolean("game-announce", true);
         ircAnnounce = section.getBoolean("irc-announce", false);
@@ -47,17 +44,15 @@ public class IRCChannel extends Channel
     @Override
     public void saveConfig(ConfigurationSection section) {
         super.saveConfig(section);
-        
+
         section.set("game-announce", gameAnnounce);
         section.set("irc-announce", ircAnnounce);
         section.set("relay-announce", relayAnnounce);
     }
 
 
-
     @Override
-    public void processMessage(Message message)
-    {
+    public void processMessage(Message message) {
         if (serverChannel != null && !message.getChannel().equals(this)) {
             if (message instanceof ChatMessage) {
                 serverChannel.sendMessage(IRCColor.toIRC(formatMessage(message)));

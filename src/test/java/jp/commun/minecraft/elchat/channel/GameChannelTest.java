@@ -20,7 +20,6 @@ import org.junit.Test;
 
 public class GameChannelTest {
     @Test
-    public void testFormatMessage()
-    {
+    public void testFormatMessage() {
     }
 }

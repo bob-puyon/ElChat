@@ -25,11 +25,9 @@ import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.PermissionUser;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-public abstract class Channel
-{
+public abstract class Channel {
     protected String name;
     protected String title;
     protected String type;
@@ -41,14 +39,12 @@ public abstract class Channel
     protected boolean announce = false;
     protected boolean forwardAnnounce = false;
 
-    public Channel(String name)
-    {
+    public Channel(String name) {
         this.name = name;
         this.forwards = new ArrayList<String>();
     }
-    
-    public void loadConfig(ConfigurationSection section)
-    {
+
+    public void loadConfig(ConfigurationSection section) {
         this.name = section.getName();
         title = section.getString("title");
         type = section.getString("type");
@@ -62,9 +58,8 @@ public abstract class Channel
         if (section.contains("announce")) announce = section.getBoolean("announce", false);
         if (section.contains("forward-announce")) forwardAnnounce = section.getBoolean("forward-announce", false);
     }
-    
-    public void saveConfig(ConfigurationSection section)
-    {
+
+    public void saveConfig(ConfigurationSection section) {
         section.set("title", title);
         section.set("type", type);
         section.set("auto-join", autoJoin);
@@ -75,19 +70,18 @@ public abstract class Channel
         section.set("announce", announce);
         section.set("forward-announce", forwardAnnounce);
     }
-    
-    public void sendMessage(Message message)
-    {
+
+    public void sendMessage(Message message) {
         if (message.getChannel() == null) {
             message.setChannel(this);
 
             if (romaToHira && message instanceof ChatMessage) {
-                String textMessage = ((ChatMessage)message).getMessage();
+                String textMessage = ((ChatMessage) message).getMessage();
                 String cleanMessage = textMessage.replaceAll("&([a-z0-9])", "");
                 if (!RomaToHira.hasHiragana(cleanMessage)) {
                     String hiraMessage = RomaToHira.convert(cleanMessage);
                     if (!hiraMessage.equals(cleanMessage)) {
-                        ((ChatMessage)message).setMessage(textMessage + " &f(" + hiraMessage + ")");
+                        ((ChatMessage) message).setMessage(textMessage + " &f(" + hiraMessage + ")");
                     }
                 }
             }
@@ -95,7 +89,7 @@ public abstract class Channel
             if (!(message instanceof AnnounceMessage) || !message.isForwardOnly()) {
                 processMessage(message);
             }
-            
+
             forward(message);
         } else {
             if (!(message instanceof AnnounceMessage) || !message.isForwardOnly()) {
@@ -103,39 +97,34 @@ public abstract class Channel
             }
         }
     }
-    
-    protected void forward(Message message)
-    {
+
+    protected void forward(Message message) {
         if (!message.isForwardable()) return;
         // routing another channel
         message.setForwardOnly(false);
 
-        Iterator<String> it = forwards.iterator();
-        while (it.hasNext()) {
-            String channelName = it.next();
+        for (String channelName : forwards) {
             Channel channel = ElChatPlugin.getPlugin().getChannelManager().getChannel(channelName);
             if (channel == null || channel.equals(this)) continue;
             channel.sendMessage(message);
         }
     }
-    
+
     public abstract void processMessage(Message message);
-    
+
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         return (o instanceof Channel && ((Channel) o).getName().equals(getName()));
     }
-    
-    public String formatMessage(Message message)
-    {
+
+    public String formatMessage(Message message) {
         if (message instanceof ChatMessage) {
             String format = getMessageFormat();
             format = formatPlayer(format, (PlayerMessage) message);
             format = formatChannel(format, message);
-            
 
-            String textMessage = ((ChatMessage)message).getMessage();
+
+            String textMessage = ((ChatMessage) message).getMessage();
             // IDSP対策のため全角スペースを半角スペースに置換
             textMessage = textMessage.replace("　", "　");
 
@@ -147,7 +136,7 @@ public abstract class Channel
         } else if (message instanceof ChannelMessage) {
             String format = getChannelFormat();
             format = formatChannel(format, message);
-            format = format.replace("{message}", ((ChannelMessage)message).getMessage());
+            format = format.replace("{message}", ((ChannelMessage) message).getMessage());
             format = format.replaceAll("&([a-z0-9])", "\u00A7$1");
             return format;
         } else if (message instanceof PluginMessage) {
@@ -156,9 +145,8 @@ public abstract class Channel
         }
         return "";
     }
-    
-    public String formatPlayer(String format, PlayerMessage message)
-    {
+
+    public String formatPlayer(String format, PlayerMessage message) {
         ChatPlayer sender = message.getPlayer();
         String userPrefix = "";
         String userSuffix = "";
@@ -175,36 +163,33 @@ public abstract class Channel
             }
         } else {
             format = format.replace("{world}", "");
-            format = format.replace("{player}", ((ChatMessage)message).getPlayerName());
+            format = format.replace("{player}", ((ChatMessage) message).getPlayerName());
         }
         format = format.replace("{prefix}", userPrefix);
         format = format.replace("{suffix}", userSuffix);
         return format;
     }
-    
-    public String formatChannel(String format, Message message)
-    {
+
+    public String formatChannel(String format, Message message) {
         format = format.replace("{channel}", message.getChannel().getTitle());
-        
+
         if (!(this instanceof GameChannel)) {
             format = format.replace("{channelno}", "");
         }
-        
+
         return format;
     }
-    
-    public String getMessageFormat()
-    {
+
+    public String getMessageFormat() {
         if (messageFormat == null) return ElChatPlugin.getPlugin().getConfig().getString("global.message-format");
         return messageFormat;
     }
-    
-    public String getChannelFormat()
-    {
+
+    public String getChannelFormat() {
         if (channelFormat == null) return ElChatPlugin.getPlugin().getConfig().getString("global.channel-format");
         return channelFormat;
     }
-    
+
 
     public String getName() {
         return name;
@@ -230,16 +215,14 @@ public abstract class Channel
     public void setAutoJoin(boolean autoJoin) {
         this.autoJoin = autoJoin;
     }
-    
-    public void addForward(Channel channel)
-    {
+
+    public void addForward(Channel channel) {
         if (channel != null) {
             addForward(channel.getName());
         }
     }
-    
-    public void addForward(String channelName)
-    {
+
+    public void addForward(String channelName) {
         if (channelName != null && !forwards.contains(channelName)) {
             forwards.add(channelName);
         }
@@ -275,17 +258,17 @@ public abstract class Channel
     }
 
     public abstract void join(ChatPlayer player);
+
     public abstract void quit(ChatPlayer player);
+
     public abstract void chat(ChatPlayer player, String message);
-    
-    public void broadcast(String message)
-    {
+
+    public void broadcast(String message) {
         Message m = new ChannelMessage(message);
         sendMessage(m);
     }
 
-    public void announce(String message)
-    {
+    public void announce(String message) {
         Message m = new AnnounceMessage(message);
         m.setForwardable(forwardAnnounce);
         m.setForwardOnly(!announce);

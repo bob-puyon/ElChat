@@ -18,8 +18,7 @@ package jp.commun.minecraft.elchat.message;
 
 import jp.commun.minecraft.elchat.channel.Channel;
 
-public abstract class Message
-{
+public abstract class Message {
     protected Channel channel;
     protected boolean forwardable = true;
     protected boolean forwardOnly = false;

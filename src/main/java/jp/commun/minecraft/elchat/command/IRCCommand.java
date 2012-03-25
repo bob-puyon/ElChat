@@ -28,17 +28,15 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 
-public class IRCCommand implements CommandHandler
-{
+public class IRCCommand implements CommandHandler {
     private final ElChatPlugin plugin;
 
     public IRCCommand(ElChatPlugin plugin) {
         this.plugin = plugin;
     }
 
-    @Command( names = { "elchat irc", "irc" }, permissions = { "elchat.irc" })
-    public void irc(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"elchat irc", "irc"}, permissions = {"elchat.irc"})
+    public void irc(CommandSender sender, String commandName, String[] args) {
         Map<String, Bot> bots = plugin.getIRCManager().getBots();
         for (String name : bots.keySet()) {
             Bot bot = bots.get(name);
@@ -55,16 +53,14 @@ public class IRCCommand implements CommandHandler
         }
     }
 
-    @Command( names = { "elchat irc connect", "irc connect"}, permissions = { "elchat.irc.connect" })
-    public void connect(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"elchat irc connect", "irc connect"}, permissions = {"elchat.irc.connect"})
+    public void connect(CommandSender sender, String commandName, String[] args) {
         plugin.getIRCManager().connect();
         sender.sendMessage("[ElChat] connecting...");
     }
 
-    @Command( names = { "elchat irc disconnect", "irc disconnect"}, permissions = { "elchat.irc.disconnect" })
-    public void disconnect(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"elchat irc disconnect", "irc disconnect"}, permissions = {"elchat.irc.disconnect"})
+    public void disconnect(CommandSender sender, String commandName, String[] args) {
         plugin.getIRCManager().disconnect();
         sender.sendMessage("[ElChat] disconnecting...");
     }

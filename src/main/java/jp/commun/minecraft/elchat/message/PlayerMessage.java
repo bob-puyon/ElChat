@@ -18,8 +18,7 @@ package jp.commun.minecraft.elchat.message;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
 
-public abstract class PlayerMessage extends Message
-{
+public abstract class PlayerMessage extends Message {
     protected ChatPlayer player;
     protected String playerName;
 

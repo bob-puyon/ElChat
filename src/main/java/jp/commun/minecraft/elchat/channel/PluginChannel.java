@@ -19,8 +19,7 @@ package jp.commun.minecraft.elchat.channel;
 import jp.commun.minecraft.elchat.ChatPlayer;
 import jp.commun.minecraft.elchat.message.Message;
 
-public class PluginChannel extends Channel
-{
+public class PluginChannel extends Channel {
     public PluginChannel(String name) {
         super(name);
         this.type = "plugin";

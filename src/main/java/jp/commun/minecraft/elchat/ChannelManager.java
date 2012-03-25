@@ -25,34 +25,30 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-public class ChannelManager
-{
+public class ChannelManager {
     private final ElChatPlugin plugin;
     private final File configFile;
     private FileConfiguration config;
     private String defaultChannel;
     private Map<String, Channel> channels;
 
-    public ChannelManager(ElChatPlugin plugin)
-    {
+    public ChannelManager(ElChatPlugin plugin) {
         this.plugin = plugin;
         this.configFile = new File(plugin.getDataFolder(), "channels.yml");
         channels = new HashMap<String, Channel>();
     }
 
-    public void loadConfig()
-    {
+    public void loadConfig() {
         config = new YamlConfiguration();
         if (configFile.exists()) {
             try {
                 this.config.load(configFile);
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             } catch (InvalidConfigurationException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         } else {
             config.setDefaults(YamlConfiguration.loadConfiguration(getClass().getResourceAsStream("/channels.yml")));
@@ -60,21 +56,19 @@ public class ChannelManager
             try {
                 config.save(configFile);
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
 
         if (config.contains("default-channel")) {
             defaultChannel = config.getString("default-channel");
         }
-        
-        Iterator<String> it = config.getConfigurationSection("channels").getKeys(false).iterator();
-        while (it.hasNext()) {
-            String name = it.next();
+
+        for (String name : config.getConfigurationSection("channels").getKeys(false)) {
             Channel channel;
             ConfigurationSection section = config.getConfigurationSection("channels." + name);
             String type = section.getString("type", "");
-            
+
             if (channels.containsKey(name)) {
                 channel = channels.get(name);
             } else if (type.equals("dynmap")) {
@@ -93,64 +87,53 @@ public class ChannelManager
         }
     }
 
-    public void reloadConfig()
-    {
+    public void reloadConfig() {
         loadConfig();
         saveConfig();
     }
 
-    public void saveConfig()
-    {
+    public void saveConfig() {
         config.set("channels", null);
-        Iterator<String> it = channels.keySet().iterator();
-        while (it.hasNext()) {
-            Channel channel = channels.get(it.next());
+        for (String s : channels.keySet()) {
+            Channel channel = channels.get(s);
             if (channel instanceof IRCChannel) continue;
             ConfigurationSection section = config.createSection("channels." + channel.getName());
             channel.saveConfig(section);
         }
-        
+
         try {
             config.save(configFile);
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
-    public void createChannel()
-    {
-
-    }
-    
-    public void addChannel(Channel channel)
-    {
+    public void addChannel(Channel channel) {
         if (!channels.containsKey(channel.getName().toLowerCase())) {
-            plugin.getLogger().info("ChannelManager addChannel:" + channel.getName()) ;
+            plugin.getLogger().info("ChannelManager addChannel:" + channel.getName());
             channels.put(channel.getName().toLowerCase(), channel);
         }
     }
-    
-    public Channel getChannel(String name)
-    {
+
+    public Channel getChannel(String name) {
         if (!channels.containsKey(name.toLowerCase())) return null;
         return channels.get(name.toLowerCase());
     }
-    
-    public Channel getChannel(String name, ChatPlayer player)
-    {
+
+    public Channel getChannel(String name, ChatPlayer player) {
         try {
             int no = Integer.parseInt(name);
-            
+
             return player.getChannel(no);
         } catch (NumberFormatException ignored) {
         }
-        
+
         if (channels.containsKey(name.toLowerCase())) return channels.get(name.toLowerCase());
-        
-        for (Channel channel: channels.values()) {
+
+        for (Channel channel : channels.values()) {
             if (channel.getTitle().equals(name)) return channel;
         }
-        
+
         return null;
     }
 
@@ -159,8 +142,7 @@ public class ChannelManager
         return channels;
     }
 
-    public Channel getDefaultChannel()
-    {
+    public Channel getDefaultChannel() {
         if (!channels.containsKey(defaultChannel)) return null;
         return channels.get(defaultChannel.toLowerCase());
     }

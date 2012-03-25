@@ -16,8 +16,7 @@
 
 package jp.commun.minecraft.elchat.message;
 
-public class PluginMessage extends Message
-{
+public class PluginMessage extends Message {
     protected String message;
 
     public PluginMessage(String message) {

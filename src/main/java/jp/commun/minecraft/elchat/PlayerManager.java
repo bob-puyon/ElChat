@@ -29,34 +29,30 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class PlayerManager
-{
+public class PlayerManager {
     private ElChatPlugin plugin;
     private Map<String, ChatPlayer> players;
     private File playerDir;
 
-    public PlayerManager(ElChatPlugin plugin)
-    {
+    public PlayerManager(ElChatPlugin plugin) {
         this.plugin = plugin;
         this.players = new HashMap<String, ChatPlayer>();
 
         playerDir = new File(plugin.getDataFolder(), "players");
-        if (!playerDir.exists()) playerDir.mkdirs();
+        if (!playerDir.exists()) {
+            playerDir.mkdirs();
+        }
     }
 
-    public void loadConfig()
-    {
+    public void loadConfig() {
     }
 
-    public void reloadConfig()
-    {
+    public void reloadConfig() {
     }
 
-    public void saveConfig()
-    {
-        Iterator<String> it = players.keySet().iterator();
-        while (it.hasNext()) {
-            ChatPlayer player = players.get(it.next());
+    public void saveConfig() {
+        for (String s : players.keySet()) {
+            ChatPlayer player = players.get(s);
             try {
                 player.saveConfig();
             } catch (Exception e) {
@@ -64,9 +60,8 @@ public class PlayerManager
             }
         }
     }
-    
-    protected void loadPlayer(Player player)
-    {
+
+    protected void loadPlayer(Player player) {
         ChatPlayer chatPlayer;
         if (!this.players.containsKey(player.getName())) {
             chatPlayer = new ChatPlayer(player);
@@ -74,16 +69,16 @@ public class PlayerManager
             try {
                 chatPlayer.loadConfig();
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             } catch (InvalidConfigurationException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
             players.put(chatPlayer.getName(), chatPlayer);
         } else {
             chatPlayer = players.get(player.getName());
         }
-        
-        for (Channel channel: plugin.getChannelManager().getChannels().values()) {
+
+        for (Channel channel : plugin.getChannelManager().getChannels().values()) {
             if (channel.isAutoJoin() && channel instanceof GameChannel) {
                 if (!chatPlayer.hasChannel(channel)) chatPlayer.addChannel(channel);
                 channel.join(chatPlayer);
@@ -91,20 +86,18 @@ public class PlayerManager
         }
     }
 
-    public void onPlayerJoin(PlayerJoinEvent event)
-    {
-        loadPlayer(event.getPlayer());    
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        loadPlayer(event.getPlayer());
     }
 
-    public void onPlayerQuit(PlayerQuitEvent event)
-    {
+    public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         if (players.containsKey(player.getName())) {
             ChatPlayer chatPlayer = players.get(player.getName());
             try {
                 chatPlayer.saveConfig();
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
             players.remove(player.getName());
 
@@ -116,9 +109,8 @@ public class PlayerManager
             }
         }
     }
-    
-    public void onPlayerChat(PlayerChatEvent event)
-    {
+
+    public void onPlayerChat(PlayerChatEvent event) {
         ChatPlayer player = getPlayer(event.getPlayer().getName());
         Channel currentChannel = player.getCurrentChannel();
         if (currentChannel == null) currentChannel = plugin.getChannelManager().getDefaultChannel();
@@ -126,8 +118,7 @@ public class PlayerManager
         event.setCancelled(true);
     }
 
-    public ChatPlayer getPlayer(String name)
-    {
+    public ChatPlayer getPlayer(String name) {
         if (!players.containsKey(name)) {
             Player player = plugin.getServer().getPlayer(name);
             if (player == null) return null;
@@ -139,8 +130,7 @@ public class PlayerManager
         return players;
     }
 
-    public File getPlayerDir()
-    {
+    public File getPlayerDir() {
         return playerDir;
     }
 }

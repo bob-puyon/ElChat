@@ -37,23 +37,19 @@ import org.bukkit.event.Listener;
  * Time: 6:28
  * To change this template use File | Settings | File Templates.
  */
-public class IRCListener implements Listener
-{
+public class IRCListener implements Listener {
     private final ElChatPlugin plugin;
 
-    public IRCListener(ElChatPlugin instance)
-    {
+    public IRCListener(ElChatPlugin instance) {
         plugin = instance;
     }
 
     @EventHandler
-    public void onIRCMessage(IRCMessageEvent event)
-    {
+    public void onIRCMessage(IRCMessageEvent event) {
     }
-    
+
     @EventHandler
-    public void onIRCCommand(IRCCommandEvent event)
-    {
+    public void onIRCCommand(IRCCommandEvent event) {
         if (event.getCommandName().equals("say")) {
             Message message = new ChatMessage(event.getNick(), StringUtils.join(event.getArgs(), " "));
             Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
@@ -65,8 +61,7 @@ public class IRCListener implements Listener
     }
 
     @EventHandler
-    public void onIRCJoin(IRCJoinEvent event)
-    {
+    public void onIRCJoin(IRCJoinEvent event) {
         Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
         if (bot != null) {
             IRCChannel channel = bot.getServer().getChannel(event.getChannel());
@@ -77,8 +72,7 @@ public class IRCListener implements Listener
     }
 
     @EventHandler
-    public void onIRCQuit(IRCQuitEvent event)
-    {
+    public void onIRCQuit(IRCQuitEvent event) {
         Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
         if (bot != null) {
             IRCChannel channel = bot.getServer().getChannel(event.getChannel());

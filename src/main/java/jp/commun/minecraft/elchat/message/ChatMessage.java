@@ -18,18 +18,15 @@ package jp.commun.minecraft.elchat.message;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
 
-public class ChatMessage extends PlayerMessage
-{
+public class ChatMessage extends PlayerMessage {
     protected String message;
 
-    public ChatMessage(ChatPlayer player, String message)
-    {
+    public ChatMessage(ChatPlayer player, String message) {
         super(player);
         this.message = message;
     }
 
-    public ChatMessage(String playerName, String message)
-    {
+    public ChatMessage(String playerName, String message) {
         super(playerName);
         this.message = message;
     }

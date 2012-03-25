@@ -23,8 +23,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
-public class GameChannel extends Channel
-{
+public class GameChannel extends Channel {
     protected Map<String, ChatPlayer> players;
     protected int area = 0;
     protected boolean onlyWorld = false;
@@ -35,8 +34,7 @@ public class GameChannel extends Channel
     protected List<String> mutes;
     protected String password;
 
-    public GameChannel(String name)
-    {
+    public GameChannel(String name) {
         super(name);
         players = new HashMap<String, ChatPlayer>();
         moderators = new ArrayList<String>();
@@ -67,7 +65,7 @@ public class GameChannel extends Channel
     @Override
     public void saveConfig(ConfigurationSection section) {
         super.saveConfig(section);
-        
+
         section.set("area", area);
         section.set("only-world", onlyWorld);
         section.set("moderation", moderation);
@@ -79,8 +77,7 @@ public class GameChannel extends Channel
     }
 
     @Override
-    public void processMessage(Message message)
-    {
+    public void processMessage(Message message) {
         String formattedMessage = formatMessage(message);
         // forwardをチェックしていないのでannounceが流れちゃう
         Iterator<ChatPlayer> it = players.values().iterator();
@@ -88,11 +85,12 @@ public class GameChannel extends Channel
             ChatPlayer recipient = it.next();
             ChatPlayer sender = null;
             if (message instanceof ChatMessage) {
-                sender = ((ChatMessage)message).getPlayer();
+                sender = ((ChatMessage) message).getPlayer();
             }
-            if (onlyWorld && sender != null && !recipient.getPlayer().getWorld().equals(sender.getPlayer().getWorld())) continue;
+            if (onlyWorld && sender != null && !recipient.getPlayer().getWorld().equals(sender.getPlayer().getWorld()))
+                continue;
             if (area != 0 && sender != null && recipient.getLocation().distance(sender.getLocation()) > area) continue;
-    
+
             String channelNo = "";
             if (message.getChannel().equals(this)) {
                 int no = recipient.getChannelNo(this);
@@ -105,15 +103,14 @@ public class GameChannel extends Channel
     }
 
     @Override
-    public void join(ChatPlayer player)
-    {
+    public void join(ChatPlayer player) {
         if (players.containsKey(player.getName())) return;
 
         if (bans.contains(player.getName())) {
             player.sendMessage("You are banned from that channel.");
             return;
         }
-        
+
         if (password != null && ((owner != null && !player.getName().equals(owner)) || !moderators.contains(player.getName()))) {
             player.sendMessage("Incorrect channel password.");
             return;
@@ -128,8 +125,7 @@ public class GameChannel extends Channel
     }
 
     @Override
-    public void quit(ChatPlayer player)
-    {
+    public void quit(ChatPlayer player) {
         if (!players.containsKey(player.getName())) return;
         player.sendMessage("Left Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
 
@@ -139,8 +135,7 @@ public class GameChannel extends Channel
     }
 
     @Override
-    public void chat(ChatPlayer player, String message)
-    {
+    public void chat(ChatPlayer player, String message) {
         if (!players.containsKey(player.getName())) {
             player.sendMessage("You're not on that channel.");
             return;
@@ -155,17 +150,15 @@ public class GameChannel extends Channel
         sendMessage(m);
     }
 
-    public void kick(ChatPlayer player)
-    {
+    public void kick(ChatPlayer player) {
         if (players.containsKey(player.getName())) {
             player.sendMessage("You are kicked from that channel.");
             quit(player);
             player.removeChannel(this);
         }
     }
-    
-    public void ban(ChatPlayer player)
-    {
+
+    public void ban(ChatPlayer player) {
         if (!bans.contains(player.getName())) {
             bans.add(player.getName());
 
@@ -186,30 +179,26 @@ public class GameChannel extends Channel
             }
         }
     }
-    
-    public void unban(ChatPlayer player)
-    {
+
+    public void unban(ChatPlayer player) {
         if (bans.contains(player.getName())) {
             bans.remove(player.getName());
         }
     }
-    
-    public void mute(ChatPlayer player)
-    {
+
+    public void mute(ChatPlayer player) {
         if (!mutes.contains(player.getName())) {
             mutes.add(player.getName());
         }
     }
-    
-    public void unmute(ChatPlayer player)
-    {
+
+    public void unmute(ChatPlayer player) {
         if (mutes.contains(player.getName())) {
             mutes.remove(player.getName());
         }
     }
-    
-    public Map<String, ChatPlayer> getPlayers()
-    {
+
+    public Map<String, ChatPlayer> getPlayers() {
         return players;
     }
 
@@ -245,18 +234,16 @@ public class GameChannel extends Channel
         this.owner = owner;
     }
 
-    public boolean isOwner(ChatPlayer player)
-    {
+    public boolean isOwner(ChatPlayer player) {
         return (owner != null && owner.equals(player.getName()));
     }
-    
+
 
     public List<String> getModerators() {
         return moderators;
     }
-    
-    public boolean isModerator(ChatPlayer player)
-    {
+
+    public boolean isModerator(ChatPlayer player) {
         return moderators.contains(player.getName());
     }
 

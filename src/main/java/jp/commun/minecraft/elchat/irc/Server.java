@@ -57,18 +57,16 @@ public class Server {
         }
     }
 
-    public IRCChannel getChannel(String name)
-    {
+    public IRCChannel getChannel(String name) {
         if (channels.containsKey(name)) return channels.get(name);
         return null;
     }
-    
+
     public Map<String, IRCChannel> getChannels() {
         return channels;
     }
 
-    public Set<String> getChannelNames()
-    {
+    public Set<String> getChannelNames() {
         return channels.keySet();
     }
 

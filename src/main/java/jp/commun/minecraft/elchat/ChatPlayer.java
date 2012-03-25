@@ -31,8 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class ChatPlayer
-{
+public class ChatPlayer {
     private final Player player;
     private final String name;
     private final File configFile;
@@ -48,8 +47,7 @@ public class ChatPlayer
         this.channels = new HashMap<String, Channel>();
     }
 
-    public void loadConfig() throws IOException, InvalidConfigurationException
-    {
+    public void loadConfig() throws IOException, InvalidConfigurationException {
         if (configFile.exists()) {
             config.load(configFile);
             Iterator<String> it = config.getStringList("channels").iterator();
@@ -61,7 +59,7 @@ public class ChatPlayer
                     currentChannel = channel;
                 }
             }
-            
+
             if (config.contains("default-channel")) {
                 String defaultChannel = config.getString("default-string");
                 if (channels.containsKey(defaultChannel)) {
@@ -71,97 +69,83 @@ public class ChatPlayer
         }
     }
 
-    public void saveConfig() throws IOException
-    {
+    public void saveConfig() throws IOException {
         config.set("channels", new ArrayList<String>(channels.keySet()));
         config.save(configFile);
     }
-    
-    public void addChannel(Channel channel)
-    {
+
+    public void addChannel(Channel channel) {
         if (!channels.containsKey(channel)) {
             channels.put(channel.getName(), channel);
         }
     }
 
-    public void removeChannel(Channel channel)
-    {
+    public void removeChannel(Channel channel) {
         if (channels.containsKey(channel.getName())) {
             channels.remove(channel.getName());
         }
     }
-    
-    public void sendMessage(String message)
-    {
+
+    public void sendMessage(String message) {
         player.sendMessage(message);
     }
 
-    public Player getPlayer()
-    {
+    public Player getPlayer() {
         return player;
     }
-    
-    public Location getLocation()
-    {
-        return  player.getLocation();
+
+    public Location getLocation() {
+        return player.getLocation();
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
-    
-    public Channel getChannel(String name)
-    {
+
+    public Channel getChannel(String name) {
         if (channels.containsKey(name)) return channels.get(name);
-        for (Channel channel: channels.values()) {
+        for (Channel channel : channels.values()) {
             if (channel.getTitle().equals(name)) return channel;
         }
         return null;
     }
-    
-    public Channel getChannel(int no)
-    {
+
+    public Channel getChannel(int no) {
         int i = 1;
-        for (Channel channel: channels.values()) {
+        for (Channel channel : channels.values()) {
             if (i == no) return channel;
             ++i;
         }
         return null;
     }
 
-    public Map<String, Channel> getChannels()
-    {
+    public Map<String, Channel> getChannels() {
         return channels;
     }
-    
-    public int getChannelNo(Channel channel)
-    {
+
+    public int getChannelNo(Channel channel) {
         int i = 1;
-        for (Channel c: channels.values()) {
+        for (Channel c : channels.values()) {
             if (c.equals(channel)) return i;
             i++;
         }
         return 0;
     }
 
-    public Channel getCurrentChannel()
-    {
+    public Channel getCurrentChannel() {
         if (currentChannel == null) {
             currentChannel = ElChatPlugin.getPlugin().getChannelManager().getDefaultChannel();
         }
         return currentChannel;
     }
 
-    public void setCurrentChannel(Channel channel)
-    {
+    public void setCurrentChannel(Channel channel) {
         currentChannel = channel;
 
         getPlayer().sendMessage("Changed Channel: [" + String.valueOf(getChannelNo(channel)) + ". " + currentChannel.getTitle() + "]");
     }
 
-    public boolean hasChannel(Channel channel)
-    {
+    public boolean hasChannel(Channel channel) {
         return channels.containsValue(channel);
     }
 

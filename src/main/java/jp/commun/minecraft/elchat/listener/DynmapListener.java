@@ -25,25 +25,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.dynmap.DynmapWebChatEvent;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ayu
- * Date: 12/03/11
- * Time: 14:21
- * To change this template use File | Settings | File Templates.
- */
-public class DynmapListener implements Listener
-{
+public class DynmapListener implements Listener {
     private final ElChatPlugin plugin;
 
-    public DynmapListener(ElChatPlugin instance)
-    {
+    public DynmapListener(ElChatPlugin instance) {
         plugin = instance;
     }
-    
+
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onDynmapWebChat(DynmapWebChatEvent event)
-    {
+    public void onDynmapWebChat(DynmapWebChatEvent event) {
         if (event.isCancelled()) return;
 
         Message message = new ChatMessage(event.getName(), event.getMessage());

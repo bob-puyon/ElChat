@@ -16,8 +16,7 @@
 
 package jp.commun.minecraft.elchat.message;
 
-public class ChannelMessage extends Message
-{
+public class ChannelMessage extends Message {
     protected String message;
 
     public ChannelMessage(String message) {

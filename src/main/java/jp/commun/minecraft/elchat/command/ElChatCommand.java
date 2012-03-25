@@ -21,19 +21,18 @@ import jp.commun.minecraft.util.command.Command;
 import jp.commun.minecraft.util.command.CommandHandler;
 import org.bukkit.command.CommandSender;
 
-public class ElChatCommand implements CommandHandler
-{
+public class ElChatCommand implements CommandHandler {
     private final ElChatPlugin plugin;
 
     public ElChatCommand(ElChatPlugin plugin) {
         this.plugin = plugin;
     }
 
-    @Command(names = { "elchat reload" }, permissions = { "elchat.reload"})
-    public void reload(CommandSender sender, String commandName, String[] args)
-    {
+    @Command(names = {"elchat reload"}, permissions = {"elchat.reload"})
+    public void reload(CommandSender sender, String commandName, String[] args) {
         plugin.reloadConfig();
         plugin.getChannelManager().reloadConfig();
+        plugin.getPlayerManager().reloadConfig();
         plugin.getRomaToHiraData().reloadConfig();
         sender.sendMessage("reloaded.");
     }

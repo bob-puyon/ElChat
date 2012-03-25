@@ -19,8 +19,7 @@ package jp.commun.minecraft.elchat.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class IRCCommandEvent extends Event
-{
+public class IRCCommandEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
     private final String network;
     private final String channel;
@@ -47,14 +46,12 @@ public class IRCCommandEvent extends Event
     public String getNick() {
         return nick;
     }
-    
-    public String getCommandName()
-    {
+
+    public String getCommandName() {
         return commandName;
     }
 
-    public String[] getArgs()
-    {
+    public String[] getArgs() {
         return args;
     }
 

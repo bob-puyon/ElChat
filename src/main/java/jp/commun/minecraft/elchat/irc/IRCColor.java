@@ -19,8 +19,7 @@ package jp.commun.minecraft.elchat.irc;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IRCColor
-{
+public class IRCColor {
     private static final Map<String, String> COLOR_MAP = new HashMap<String, String>() {{
         //put("00", "f"); // white
         put("01", "0"); // black
@@ -39,20 +38,18 @@ public class IRCColor
         put("14", "c"); // dark gray
         put("15", "7"); // light gray
     }};
-    
-    public static String toIRC(String text)
-    {
-        for (String ircColor: COLOR_MAP.keySet()) {
+
+    public static String toIRC(String text) {
+        for (String ircColor : COLOR_MAP.keySet()) {
             text = text.replace("\u00A7" + COLOR_MAP.get(ircColor), "\u0003" + ircColor);
         }
         // white to normal
         text = text.replace("\u00A7f", "\u000f");
         return text;
     }
-    
-    public static String toGame(String text)
-    {
-        for (String ircColor: COLOR_MAP.keySet()) {
+
+    public static String toGame(String text) {
+        for (String ircColor : COLOR_MAP.keySet()) {
             text = text.replace("\u0003" + ircColor, "\u00A7" + COLOR_MAP.get(ircColor));
         }
         // normal to white

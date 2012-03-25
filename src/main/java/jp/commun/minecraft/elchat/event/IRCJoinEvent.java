@@ -19,8 +19,7 @@ package jp.commun.minecraft.elchat.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public class IRCJoinEvent extends Event
-{
+public class IRCJoinEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
     private final String network;
     private final String channel;

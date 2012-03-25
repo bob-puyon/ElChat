@@ -22,8 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class RomaToHiraData
-{
+public class RomaToHiraData {
     protected ElChatPlugin plugin;
     private List<String> ignoreWords;
     private List<String> kanaWords;
@@ -31,20 +30,18 @@ public class RomaToHiraData
     private File ignoreWordsFile;
     private File kanaWordsFile;
     private File kanjiWordsFile;
-    
-    public RomaToHiraData(ElChatPlugin plugin)
-    {
+
+    public RomaToHiraData(ElChatPlugin plugin) {
         this.plugin = plugin;
         ignoreWords = new ArrayList<String>();
         kanaWords = new ArrayList<String>();
-        
+
         ignoreWordsFile = new File(plugin.getDataFolder(), "ignore_words.txt");
         kanaWordsFile = new File(plugin.getDataFolder(), "kana_words.txt");
         kanjiWordsFile = new File(plugin.getDataFolder(), "kanji_words.txt");
     }
 
-    public void loadConfig()
-    {
+    public void loadConfig() {
         if (!ignoreWordsFile.exists()) {
             loadFromResource(ignoreWordsFile);
         }
@@ -101,20 +98,17 @@ public class RomaToHiraData
             plugin.getLogger().severe("Could not load file: " + kanaWordsFile.getName() + " " + e.getMessage());
         }
     }
-    
-    public void reloadConfig()
-    {
+
+    public void reloadConfig() {
         loadConfig();
         saveConfig();
     }
-    
-    public void saveConfig()
-    {
-        
+
+    public void saveConfig() {
+
     }
-    
-    protected void loadFromResource(File file)
-    {
+
+    protected void loadFromResource(File file) {
         InputStream is = null;
         OutputStream os = null;
         try {
@@ -147,13 +141,11 @@ public class RomaToHiraData
         }
     }
 
-    public List<String> getIgnoreWords()
-    {
+    public List<String> getIgnoreWords() {
         return ignoreWords;
     }
 
-    public List<String> getKanaWords()
-    {
+    public List<String> getKanaWords() {
         return kanaWords;
     }
 
