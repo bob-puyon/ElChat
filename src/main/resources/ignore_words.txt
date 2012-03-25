@@ -25,5 +25,7 @@ chest
 lock
 chat
 skype
+mob
+cat
 
 

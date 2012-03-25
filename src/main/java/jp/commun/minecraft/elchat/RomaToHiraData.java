@@ -1,24 +1,36 @@
+/*
+ * Copyright 2012 ayunyan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.commun.minecraft.elchat;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ayu
- * Date: 12/03/11
- * Time: 16:10
- * To change this template use File | Settings | File Templates.
- */
 public class RomaToHiraData
 {
     protected ElChatPlugin plugin;
     private List<String> ignoreWords;
     private List<String> kanaWords;
+    private Map<String, String> kanjiWords;
     private File ignoreWordsFile;
     private File kanaWordsFile;
+    private File kanjiWordsFile;
     
     public RomaToHiraData(ElChatPlugin plugin)
     {
@@ -28,6 +40,7 @@ public class RomaToHiraData
         
         ignoreWordsFile = new File(plugin.getDataFolder(), "ignore_words.txt");
         kanaWordsFile = new File(plugin.getDataFolder(), "kana_words.txt");
+        kanjiWordsFile = new File(plugin.getDataFolder(), "kanji_words.txt");
     }
 
     public void loadConfig()
@@ -40,6 +53,11 @@ public class RomaToHiraData
             loadFromResource(kanaWordsFile);
         }
 
+        if (!kanjiWordsFile.exists()) {
+            loadFromResource(kanjiWordsFile);
+        }
+
+        // 無視単語リストをロード
         try {
             InputStream is = new FileInputStream(ignoreWordsFile);
             Scanner scanner = new Scanner(is);
@@ -53,6 +71,7 @@ public class RomaToHiraData
             plugin.getLogger().severe("Could not load file: " + ignoreWordsFile.getName() + " " + e.getMessage());
         }
 
+        // カタカナリストをロード
         try {
             InputStream is = new FileInputStream(kanaWordsFile);
             Scanner scanner = new Scanner(is);
@@ -61,6 +80,22 @@ public class RomaToHiraData
                 String line = scanner.nextLine();
                 if (line.startsWith("#") || line.equals("")) continue;
                 kanaWords.add(line);
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("Could not load file: " + kanaWordsFile.getName() + " " + e.getMessage());
+        }
+
+        // 漢字テーブルをロード
+        try {
+            InputStream is = new FileInputStream(kanjiWordsFile);
+            Scanner scanner = new Scanner(is);
+            kanjiWords.clear();
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.startsWith("#") || line.equals("")) continue;
+                String[] words = line.split("\\s+", 2);
+                if (words.length != 2) continue;
+                kanjiWords.put(words[0], words[1]);
             }
         } catch (Exception e) {
             plugin.getLogger().severe("Could not load file: " + kanaWordsFile.getName() + " " + e.getMessage());
@@ -120,5 +155,9 @@ public class RomaToHiraData
     public List<String> getKanaWords()
     {
         return kanaWords;
+    }
+
+    public Map<String, String> getKanjiWords() {
+        return kanjiWords;
     }
 }

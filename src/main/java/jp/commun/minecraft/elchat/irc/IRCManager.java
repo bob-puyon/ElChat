@@ -1,9 +1,26 @@
+/*
+ * Copyright 2012 ayunyan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.commun.minecraft.elchat.irc;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.IRCChannel;
 import jp.commun.minecraft.elchat.message.Message;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,13 +39,19 @@ public class IRCManager
         this.plugin = plugin;
         
         this.bots = new HashMap<String, Bot>();
+        loadConfig();
+    }
+
+    public void loadConfig()
+    {
         if (plugin.getConfig().contains("irc.networks")) {
             Set<String> keys = plugin.getConfig().getConfigurationSection("irc.networks").getKeys(false);
             if (keys != null && keys.size() > 0) {
                 Iterator<String> it = keys.iterator();
                 while(it.hasNext()) {
                     String name = it.next();
-                    Server server = new Server(plugin.getConfig().getConfigurationSection("irc.networks." + name));
+                    ConfigurationSection section = plugin.getConfig().getConfigurationSection("irc.networks." + name);
+                    Server server = new Server(section);
                     Bot bot = new Bot(server);
                     this.bots.put(name, bot);
 
@@ -102,7 +125,7 @@ public class IRCManager
         while (it.hasNext()) {
             String name = it.next();
             Bot bot = bots.get(name);
-            if (bot.isConnected() || !bot.isRetryEnabled()) continue;
+            if (bot.isConnected() || !bot.isRetryEnabled() || !bot.getServer().isEnabled()) continue;
             
             plugin.getLogger().info("connecting " + bot.getServer().getHost());
 

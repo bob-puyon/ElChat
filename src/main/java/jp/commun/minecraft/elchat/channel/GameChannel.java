@@ -1,20 +1,28 @@
+/*
+ * Copyright 2012 ayunyan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package jp.commun.minecraft.elchat.channel;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
-import jp.commun.minecraft.elchat.message.ChannelMessage;
 import jp.commun.minecraft.elchat.message.ChatMessage;
 import jp.commun.minecraft.elchat.message.Message;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.*;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ayu
- * Date: 12/03/08
- * Time: 5:29
- * To change this template use File | Settings | File Templates.
- */
 public class GameChannel extends Channel
 {
     protected Map<String, ChatPlayer> players;
@@ -25,6 +33,7 @@ public class GameChannel extends Channel
     protected List<String> moderators;
     protected List<String> bans;
     protected List<String> mutes;
+    protected String password;
 
     public GameChannel(String name)
     {
@@ -52,6 +61,7 @@ public class GameChannel extends Channel
         if (section.contains("mutes")) {
             mutes = section.getStringList("mutes");
         }
+        password = section.getString("password");
     }
 
     @Override
@@ -65,6 +75,7 @@ public class GameChannel extends Channel
         section.set("moderator", moderators);
         section.set("bans", bans);
         section.set("mutes", mutes);
+        section.set("password", password);
     }
 
     @Override
@@ -100,6 +111,11 @@ public class GameChannel extends Channel
 
         if (bans.contains(player.getName())) {
             player.sendMessage("You are banned from that channel.");
+            return;
+        }
+        
+        if (password != null && ((owner != null && !player.getName().equals(owner)) || !moderators.contains(player.getName()))) {
+            player.sendMessage("Incorrect channel password.");
             return;
         }
 
@@ -250,5 +266,13 @@ public class GameChannel extends Channel
 
     public List<String> getMutes() {
         return mutes;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
