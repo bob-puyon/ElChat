@@ -40,18 +40,20 @@ public class IRCCommand implements CommandHandler {
         Map<String, Bot> bots = plugin.getIRCManager().getBots();
         for (String name : bots.keySet()) {
             Bot bot = bots.get(name);
-            sender.sendMessage(ChatColor.AQUA + "--- IRC Info: " + bot.getServer().getName() + " ---");
-            sender.sendMessage(ChatColor.AQUA + "Host: " + ChatColor.WHITE + bot.getServer().getHost());
+            sender.sendMessage(ChatColor.AQUA + "--- IRC Info: " + bot.getName() + " ---");
+            sender.sendMessage(ChatColor.AQUA + "Host: " + ChatColor.WHITE + bot.getHost());
             if (bot.isConnected()) {
                 sender.sendMessage(ChatColor.AQUA + "Status: " + ChatColor.WHITE + "connected.");
             } else {
                 sender.sendMessage(ChatColor.AQUA + "Status: " + ChatColor.WHITE + "disconnected.");
             }
 
-            Set<String> channels = bot.getServer().getChannels().keySet();
+            Set<String> channels = bot.getChannels().keySet();
             sender.sendMessage(ChatColor.AQUA + "Channels: " + ChatColor.WHITE + StringUtils.join(new ArrayList<String>(channels), ", "));
         }
     }
+
+
 
     @Command(names = {"elchat irc connect", "irc connect"}, permissions = {"elchat.irc.connect"})
     public void connect(CommandSender sender, String commandName, String[] args) {

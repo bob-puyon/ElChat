@@ -30,13 +30,6 @@ import jp.commun.minecraft.util.StringUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ayu
- * Date: 12/03/06
- * Time: 6:28
- * To change this template use File | Settings | File Templates.
- */
 public class IRCListener implements Listener {
     private final ElChatPlugin plugin;
 
@@ -54,7 +47,7 @@ public class IRCListener implements Listener {
             Message message = new ChatMessage(event.getNick(), StringUtils.join(event.getArgs(), " "));
             Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
             if (bot != null) {
-                Channel channel = bot.getServer().getChannel(event.getChannel());
+                Channel channel = bot.getChannel(event.getChannel());
                 if (channel != null) channel.sendMessage(message);
             }
         }
@@ -64,7 +57,7 @@ public class IRCListener implements Listener {
     public void onIRCJoin(IRCJoinEvent event) {
         Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
         if (bot != null) {
-            IRCChannel channel = bot.getServer().getChannel(event.getChannel());
+            IRCChannel channel = bot.getChannel(event.getChannel());
             if (channel != null && channel.isIrcAnnounce()) {
                 channel.announce(String.format("{0} joined channel.", event.getNick()));
             }
@@ -75,7 +68,7 @@ public class IRCListener implements Listener {
     public void onIRCQuit(IRCQuitEvent event) {
         Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
         if (bot != null) {
-            IRCChannel channel = bot.getServer().getChannel(event.getChannel());
+            IRCChannel channel = bot.getChannel(event.getChannel());
             if (channel != null && channel.isIrcAnnounce()) {
                 channel.announce(String.format("{0} left channel.", event.getNick()));
             }

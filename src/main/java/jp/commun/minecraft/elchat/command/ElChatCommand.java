@@ -24,16 +24,29 @@ import org.bukkit.command.CommandSender;
 public class ElChatCommand implements CommandHandler {
     private final ElChatPlugin plugin;
 
+    /**
+     * Constructor
+     *
+     * @param plugin
+     */
     public ElChatCommand(ElChatPlugin plugin) {
         this.plugin = plugin;
     }
 
+    /**
+     * reload config
+     *
+     * @param sender
+     * @param commandName
+     * @param args
+     */
     @Command(names = {"elchat reload"}, permissions = {"elchat.reload"})
     public void reload(CommandSender sender, String commandName, String[] args) {
         plugin.reloadConfig();
         plugin.getChannelManager().reloadConfig();
         plugin.getPlayerManager().reloadConfig();
         plugin.getRomaToHiraData().reloadConfig();
+        plugin.getIRCManager().reloadConfig();
         sender.sendMessage("reloaded.");
     }
 }

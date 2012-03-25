@@ -74,6 +74,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
         romaToHiraData.loadConfig();
 
         ircManager = new IRCManager(this);
+        ircManager.loadConfig();
         ircManager.connect();
 
         PluginManager pm = getServer().getPluginManager();

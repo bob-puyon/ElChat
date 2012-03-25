@@ -3,4 +3,14 @@ global:
   channel-format: '[{channelno}{channel}] {message}'
 irc:
   networks:
+    freenode:
+      enabled: false
+      host: irc.freenode.net
+      port: 6667
+      nick: ElChat
+      charset: UTF-8
+      channels:
+        '#YourChannel':
+          title: IRC
+          forwards: [ global, dynmap ]
 

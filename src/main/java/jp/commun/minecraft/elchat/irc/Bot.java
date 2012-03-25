@@ -23,42 +23,84 @@ import jp.commun.minecraft.elchat.event.IRCCommandEvent;
 import jp.commun.minecraft.elchat.event.IRCJoinEvent;
 import jp.commun.minecraft.elchat.event.IRCMessageEvent;
 import jp.commun.minecraft.elchat.event.IRCQuitEvent;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.Event;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class Bot extends IrcAdaptor {
-    public Server getServer() {
-        return server;
-    }
-
-    private Server server;
+    private boolean enabled;
+    private String name;
+    private String host;
+    private int port;
+    private String nick;
+    private String charset;
+    private Map<String, IRCChannel> channels;
     private IrcConnection connection;
     private int nickCount = 0;
 
     private boolean retryEnabled = true;
 
-    public Bot(Server server) {
-        this.server = server;
-        this.connection = new IrcConnection(server.getHost(), server.getPort());
-        this.connection.setNick(server.getNick());
-        if (server.getCharset() != null && Charset.isSupported(server.getCharset())) {
-            Charset charset = Charset.forName(server.getCharset());
-            this.connection.setCharset(charset);
+    public Bot() {
+    }
+
+    public void loadConfig(ConfigurationSection section) {
+        this.enabled = section.getBoolean("enabled", true);
+        this.name = section.getName();
+        this.host = section.getString("host");
+        this.port = section.getInt("port");
+        this.nick = section.getString("nick");
+        this.charset = section.getString("charset");
+
+        this.channels = new HashMap<String, IRCChannel>();
+        ConfigurationSection channelSection = section.getConfigurationSection("channels");
+        if (channelSection != null) {
+            // 設定から消えたチャンネルを削除
+            for (IRCChannel channel : channels.values()) {
+                if (!channelSection.contains(channel.getName())) {
+                    channels.remove(channel.getName());
+                    ElChatPlugin.getPlugin().getChannelManager().removeChannel(channel);
+                    channel.getServerChannel().part();
+                }
+            }
+
+            for (String channelName : channelSection.getKeys(false)) {
+                IRCChannel channel;
+                if (channels.containsKey(channelName)) {
+                    channel = channels.get(channelName);
+                } else {
+                    channel = new IRCChannel(channelName);
+                    this.channels.put(channelName, channel);
+                    ElChatPlugin.getPlugin().getChannelManager().addChannel(channel);
+                }
+                channel.loadConfig(section.getConfigurationSection("channels." + channelName));
+            }
         }
-        this.connection.addServerListener(this);
-        this.connection.addMessageListener(this);
     }
 
     public void connect() throws IOException {
+        if (connection == null) {
+            this.connection = new IrcConnection(getHost(), getPort());
+            this.connection.setNick(getNick());
+            if (getCharset() != null && Charset.isSupported(getCharset())) {
+                Charset charset = Charset.forName(getCharset());
+                this.connection.setCharset(charset);
+            }
+            this.connection.addServerListener(this);
+            this.connection.addMessageListener(this);
+        }
+
         if (isConnected()) return;
-        ElChatPlugin.getPlugin().getLogger().info("IRC:" + server.getName() + ": connecting " + server.getHost() + "...");
+        ElChatPlugin.getPlugin().getLogger().info("IRC:" + getName() + ": connecting " + getHost() + "...");
         this.retryEnabled = true;
         try {
             this.connection.connect();
         } catch (NickNameException e) {
-            this.connection.setNick(server.getNick() + String.valueOf(nickCount));
+            this.connection.setNick(getNick() + String.valueOf(nickCount));
             nickCount++;
             this.connect();
         }
@@ -67,7 +109,7 @@ public class Bot extends IrcAdaptor {
     public void disconnect() {
         this.retryEnabled = false;
         if (!isConnected()) return;
-        ElChatPlugin.getPlugin().getLogger().info("IRC:" + server.getName() + ": disconnect from " + server.getHost());
+        ElChatPlugin.getPlugin().getLogger().info("IRC:" + getName() + ": disconnect from " + getHost());
         this.connection.disconnect();
     }
 
@@ -78,11 +120,48 @@ public class Bot extends IrcAdaptor {
     public void sendMessage() {
     }
 
+    public IRCChannel getChannel(String name) {
+        if (channels.containsKey(name)) return channels.get(name);
+        return null;
+    }
+
+    public Map<String, IRCChannel> getChannels() {
+        return channels;
+    }
+
+    public Set<String> getChannelNames() {
+        return channels.keySet();
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public String getNick() {
+        return nick;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
     @Override
     public void onConnect(final IrcConnection connection) {
 
-        for (IRCChannel c : server.getChannels().values()) {
-            ElChatPlugin.getPlugin().getLogger().info("IRC:" + server.getName() + ": joining " + c.getName());
+        for (IRCChannel c : getChannels().values()) {
+            ElChatPlugin.getPlugin().getLogger().info("IRC:" + getName() + ": joining " + c.getName());
             Channel channel = connection.createChannel(c.getName());
             channel.join();
 
@@ -109,9 +188,9 @@ public class Bot extends IrcAdaptor {
             String commandName = commands[0];
             String[] args = new String[commands.length - 1];
             System.arraycopy(commands, 1, args, 0, commands.length - 1);
-            event = new IRCCommandEvent(server.getName(), channel.getName(), sender.getNick(), commandName, args);
+            event = new IRCCommandEvent(getName(), channel.getName(), sender.getNick(), commandName, args);
         } else {
-            event = new IRCMessageEvent(server.getName(), channel.getName(), sender.getNick(), coloredMessage);
+            event = new IRCMessageEvent(getName(), channel.getName(), sender.getNick(), coloredMessage);
         }
         ElChatPlugin.getPlugin().getServer().getPluginManager().callEvent(event);
     }
@@ -119,26 +198,26 @@ public class Bot extends IrcAdaptor {
     @Override
     public void onJoin(final IrcConnection irc, final com.sorcix.sirc.Channel channel, User user) {
         if (channel == null) return;
-        IRCJoinEvent event = new IRCJoinEvent(server.getName(), channel.getName(), user.getNick());
+        IRCJoinEvent event = new IRCJoinEvent(getName(), channel.getName(), user.getNick());
         ElChatPlugin.getPlugin().getServer().getPluginManager().callEvent(event);
     }
 
     @Override
     public void onPart(final IrcConnection irc, final com.sorcix.sirc.Channel channel, final User user, String message) {
-        IRCQuitEvent event = new IRCQuitEvent(server.getName(), channel.getName(), user.getNick());
+        IRCQuitEvent event = new IRCQuitEvent(getName(), channel.getName(), user.getNick());
         ElChatPlugin.getPlugin().getServer().getPluginManager().callEvent(event);
     }
 
     @Override
     public void onKick(final IrcConnection irc, final com.sorcix.sirc.Channel channel, final User sender, final User user) {
-        IRCQuitEvent event = new IRCQuitEvent(server.getName(), channel.getName(), user.getNick());
+        IRCQuitEvent event = new IRCQuitEvent(getName(), channel.getName(), user.getNick());
         ElChatPlugin.getPlugin().getServer().getPluginManager().callEvent(event);
     }
 
     @Override
     public void onQuit(final IrcConnection irc, final User user, String message) {
-        for (String s : server.getChannelNames()) {
-            IRCQuitEvent event = new IRCQuitEvent(server.getName(), s, user.getNick());
+        for (String s : getChannelNames()) {
+            IRCQuitEvent event = new IRCQuitEvent(getName(), s, user.getNick());
             ElChatPlugin.getPlugin().getServer().getPluginManager().callEvent(event);
         }
     }

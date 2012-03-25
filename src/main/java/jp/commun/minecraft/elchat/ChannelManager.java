@@ -115,6 +115,12 @@ public class ChannelManager {
         }
     }
 
+    public void removeChannel(Channel channel) {
+        if (channels.containsKey(channel.getName().toLowerCase())) {
+            channels.remove(channel.getName().toLowerCase());
+        }
+    }
+
     public Channel getChannel(String name) {
         if (!channels.containsKey(name.toLowerCase())) return null;
         return channels.get(name.toLowerCase());

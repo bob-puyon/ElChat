@@ -17,16 +17,13 @@
 package jp.commun.minecraft.elchat.irc;
 
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.IRCChannel;
-import jp.commun.minecraft.elchat.message.Message;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 
 public class IRCManager {
@@ -38,24 +35,39 @@ public class IRCManager {
         this.plugin = plugin;
 
         this.bots = new HashMap<String, Bot>();
-        loadConfig();
     }
 
     public void loadConfig() {
         if (plugin.getConfig().contains("irc.networks")) {
-            Set<String> keys = plugin.getConfig().getConfigurationSection("irc.networks").getKeys(false);
-            if (keys != null && keys.size() > 0) {
-                Iterator<String> it = keys.iterator();
-                while (it.hasNext()) {
-                    String name = it.next();
-                    ConfigurationSection section = plugin.getConfig().getConfigurationSection("irc.networks." + name);
-                    Server server = new Server(section);
-                    Bot bot = new Bot(server);
-                    this.bots.put(name, bot);
+            ConfigurationSection networkSection = plugin.getConfig().getConfigurationSection("irc.networks");
 
-                    for (IRCChannel channel : server.getChannels().values()) {
-                        plugin.getChannelManager().addChannel(channel);
+            // 削除されたBOTを切断
+            for (Bot bot: bots.values()) {
+                if (!networkSection.contains(bot.getName())) {
+                    bot.disconnect();
+                    
+                    for (IRCChannel channel : bot.getChannels().values()) {
+                        plugin.getChannelManager().removeChannel(channel);
                     }
+                    
+                    bots.remove(bot.getName());
+                }
+            }
+
+            for (String name : networkSection.getKeys(false)) {
+                ConfigurationSection section = plugin.getConfig().getConfigurationSection("irc.networks." + name);
+                Bot bot;
+                if (bots.containsKey(name)) {
+                    bot = bots.get(name);
+                } else {
+                    bot = new Bot();
+                    bots.put(name, bot);
+                }
+                bot.loadConfig(section);
+
+                // 無効になったので切断
+                if (bot.isConnected() && !bot.isEnabled()) {
+                    bot.disconnect();
                 }
             }
         }
@@ -63,13 +75,7 @@ public class IRCManager {
 
 
     public void reloadConfig() {
-        for (Bot bot : bots.values()) {
-            for (Channel channel : bot.getServer().getChannels().values()) {
-                String sectionName = "irc.networks." + bot.getServer().getName() + ".channels." + channel.getName();
-                if (!plugin.getConfig().contains(sectionName)) continue;
-                channel.loadConfig(plugin.getConfig().getConfigurationSection(sectionName));
-            }
-        }
+        loadConfig();
     }
 
     public void connect() {
@@ -88,27 +94,10 @@ public class IRCManager {
     }
 
     public void disconnect() {
-        Iterator<String> it = bots.keySet().iterator();
-        boolean needReconnect = false;
-        while (it.hasNext()) {
-            String name = it.next();
+        for (String name : bots.keySet()) {
             Bot bot = bots.get(name);
             bot.disconnect();
         }
-    }
-
-    public void sendMessage(Message message) {
-
-    }
-
-    public Map<String, String> getRoutes(String network, String channel) {
-        if (this.bots.containsKey(network)) {
-            Server server = this.bots.get(network).getServer();
-            if (server.getChannels().containsKey(channel)) {
-                server.getChannels().get(channel).getForwards();
-            }
-        }
-        return null;
     }
 
     private void doConnect() {
@@ -117,14 +106,14 @@ public class IRCManager {
         while (it.hasNext()) {
             String name = it.next();
             Bot bot = bots.get(name);
-            if (bot.isConnected() || !bot.isRetryEnabled() || !bot.getServer().isEnabled()) continue;
+            if (bot.isConnected() || !bot.isRetryEnabled() || !bot.isEnabled()) continue;
 
-            plugin.getLogger().info("connecting " + bot.getServer().getHost());
+            plugin.getLogger().info("connecting " + bot.getHost());
 
             try {
                 bot.connect();
             } catch (IOException e) {
-                plugin.getLogger().info("IRC: " + bot.getServer().getHost() + " connect failed.");
+                plugin.getLogger().info("IRC: " + bot.getHost() + " connect failed.");
 
                 e.printStackTrace();
                 needReconnect = true;
