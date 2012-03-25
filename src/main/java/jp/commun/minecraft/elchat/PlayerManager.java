@@ -45,6 +45,9 @@ public class PlayerManager {
     }
 
     public void loadConfig() {
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            loadPlayer(player);
+        }
     }
 
     public void reloadConfig() {

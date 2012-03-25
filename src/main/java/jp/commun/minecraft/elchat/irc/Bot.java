@@ -114,7 +114,7 @@ public class Bot extends IrcAdaptor {
     }
 
     public boolean isConnected() {
-        return this.connection.isConnected();
+        return (this.connection != null && this.connection.isConnected());
     }
 
     public void sendMessage() {

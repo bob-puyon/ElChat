@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class ChatPlayer {
@@ -50,9 +49,17 @@ public class ChatPlayer {
     public void loadConfig() throws IOException, InvalidConfigurationException {
         if (configFile.exists()) {
             config.load(configFile);
-            Iterator<String> it = config.getStringList("channels").iterator();
-            while (it.hasNext()) {
-                Channel channel = ElChatPlugin.getPlugin().getChannelManager().getChannel(it.next());
+            for (String channelName : config.getStringList("channels")) {
+                Channel channel = ElChatPlugin.getPlugin().getChannelManager().getChannel(channelName);
+                if (channel == null) {
+                    if (player.hasPermission("elchat.channel.create")) {
+                        channel = new GameChannel(channelName);
+                        ((GameChannel) channel).setOwner(player.getName());
+                        ElChatPlugin.getPlugin().getChannelManager().addChannel(channel);
+                    } else {
+                        continue;
+                    }
+                }
 
                 channel.join(this);
                 if (currentChannel == null && channel instanceof GameChannel) {
