@@ -21,6 +21,7 @@ import jp.commun.minecraft.util.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class RomaToHira {
@@ -346,6 +347,7 @@ public class RomaToHira {
     public static String convert(String text) {
         List<String> ignoreWords = ElChatPlugin.getPlugin().getRomaToHiraData().getIgnoreWords();
         List<String> kanaWords = ElChatPlugin.getPlugin().getRomaToHiraData().getKanaWords();
+        Map<String, String> kanjiWords = ElChatPlugin.getPlugin().getRomaToHiraData().getKanjiWords();
 
         String[] words = text.trim().split("[\\s,\\.]+");
 
@@ -381,13 +383,13 @@ public class RomaToHira {
                 }
 
                 if (!match && wordLen > j) sb.append(word.substring(j, j + 1));
-
-
             }
 
             String convertedWord = sb.toString();
             if (kanaWords.contains(convertedWord)) {
                 convertedWords.add(StringUtils.convertHiraToKana(convertedWord));
+            } else if (kanjiWords.containsKey(convertedWord)) {
+                convertedWords.add(kanjiWords.get(convertedWord));
             } else {
                 convertedWords.add(convertedWord);
             }

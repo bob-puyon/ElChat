@@ -117,6 +117,7 @@
                         <option>-keepattributes **</option>
                         <option>-keep public class * extends org.bukkit.plugin.java.JavaPlugin { *; }</option>
                         <option>-keepclassmembers class * implements org.bukkit.event.Listener { *; }</option>
+                        <option>-keepclassmembers class * extends org.bukkit.event.Event { *; }</option>
                         <option>-keepclassmembers class * implements jp.commun.minecraft.util.command.CommandHandler {
                             *; }
                         </option>
@@ -139,6 +140,11 @@
                             <inclusion>
                                 <groupId>org.dynmap</groupId>
                                 <artifactId>dynmap-api</artifactId>
+                                <library>true</library>
+                            </inclusion>
+                            <inclusion>
+                                <groupId>com.sorcix</groupId>
+                                <artifactId>sirc</artifactId>
                                 <library>true</library>
                             </inclusion>
                         </inclusions>

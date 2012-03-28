@@ -17,10 +17,7 @@
 package jp.commun.minecraft.elchat;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class RomaToHiraData {
     protected ElChatPlugin plugin;
@@ -35,6 +32,7 @@ public class RomaToHiraData {
         this.plugin = plugin;
         ignoreWords = new ArrayList<String>();
         kanaWords = new ArrayList<String>();
+        kanjiWords = new HashMap<String, String>();
 
         ignoreWordsFile = new File(plugin.getDataFolder(), "ignore_words.txt");
         kanaWordsFile = new File(plugin.getDataFolder(), "kana_words.txt");
@@ -57,13 +55,14 @@ public class RomaToHiraData {
         // 無視単語リストをロード
         try {
             InputStream is = new FileInputStream(ignoreWordsFile);
-            Scanner scanner = new Scanner(is);
+            Scanner scanner = new Scanner(is, "UTF-8");
             ignoreWords.clear();
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
+                String line = scanner.nextLine().trim();
                 if (line.startsWith("#") || line.equals("")) continue;
                 ignoreWords.add(line);
             }
+            plugin.getLogger().info(String.valueOf(ignoreWords.size()) + " ignore words loaded.");
         } catch (Exception e) {
             plugin.getLogger().severe("Could not load file: " + ignoreWordsFile.getName() + " " + e.getMessage());
         }
@@ -71,13 +70,14 @@ public class RomaToHiraData {
         // カタカナリストをロード
         try {
             InputStream is = new FileInputStream(kanaWordsFile);
-            Scanner scanner = new Scanner(is);
+            Scanner scanner = new Scanner(is, "UTF-8");
             kanaWords.clear();
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
+                String line = scanner.nextLine().trim();
                 if (line.startsWith("#") || line.equals("")) continue;
                 kanaWords.add(line);
             }
+            plugin.getLogger().info(String.valueOf(kanaWords.size()) + " kana words loaded.");
         } catch (Exception e) {
             plugin.getLogger().severe("Could not load file: " + kanaWordsFile.getName() + " " + e.getMessage());
         }
@@ -85,17 +85,18 @@ public class RomaToHiraData {
         // 漢字テーブルをロード
         try {
             InputStream is = new FileInputStream(kanjiWordsFile);
-            Scanner scanner = new Scanner(is);
+            Scanner scanner = new Scanner(is, "UTF-8");
             kanjiWords.clear();
             while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
+                String line = scanner.nextLine().trim();
                 if (line.startsWith("#") || line.equals("")) continue;
                 String[] words = line.split("\\s+", 2);
                 if (words.length != 2) continue;
-                kanjiWords.put(words[0], words[1]);
+                kanjiWords.put(words[0].trim(), words[1].trim());
             }
+            plugin.getLogger().info(String.valueOf(kanjiWords.size()) + " kanji words loaded.");
         } catch (Exception e) {
-            plugin.getLogger().severe("Could not load file: " + kanaWordsFile.getName() + " " + e.getMessage());
+            plugin.getLogger().severe("Could not load file: " + kanjiWordsFile.getName() + " " + e.getMessage());
         }
     }
 

@@ -159,7 +159,6 @@ public class Bot extends IrcAdaptor {
 
     @Override
     public void onConnect(final IrcConnection connection) {
-
         for (IRCChannel c : getChannels().values()) {
             ElChatPlugin.getPlugin().getLogger().info("IRC:" + getName() + ": joining " + c.getName());
             Channel channel = connection.createChannel(c.getName());
@@ -178,8 +177,6 @@ public class Bot extends IrcAdaptor {
 
     @Override
     public void onMessage(final IrcConnection irc, final User sender, final com.sorcix.sirc.Channel channel, final String message) {
-        ElChatPlugin.getPlugin().getLogger().info("Bot.onMessage:" + message);
-
         String coloredMessage = IRCColor.toGame(message);
 
         Event event;

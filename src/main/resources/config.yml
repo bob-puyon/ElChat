@@ -1,7 +1,9 @@
 global:
   message-format: '[{channelno}{channel}] [{prefix}{player}{suffix}&f] {message}'
   channel-format: '[{channelno}{channel}] {message}'
+  roma-to-hira-format: '{message} &f({converted})'
 irc:
+  default-say: false
   networks:
     freenode:
       enabled: false

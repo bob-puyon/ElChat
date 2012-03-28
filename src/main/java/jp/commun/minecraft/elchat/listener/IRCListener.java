@@ -39,6 +39,14 @@ public class IRCListener implements Listener {
 
     @EventHandler
     public void onIRCMessage(IRCMessageEvent event) {
+        if (plugin.getConfig().getBoolean("irc.default-say", false)) {
+            Message message = new ChatMessage(event.getNick(), event.getMessage());
+            Bot bot = plugin.getIRCManager().getBot(event.getNetwork());
+            if (bot != null) {
+                Channel channel = bot.getChannel(event.getChannel());
+                if (channel != null) channel.sendMessage(message);
+            }
+        }
     }
 
     @EventHandler

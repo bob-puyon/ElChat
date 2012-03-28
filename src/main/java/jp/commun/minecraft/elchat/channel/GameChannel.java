@@ -106,6 +106,11 @@ public class GameChannel extends Channel {
     public void join(ChatPlayer player) {
         if (players.containsKey(player.getName())) return;
 
+        if (player.getChannels().size() >= 10) {
+            player.sendMessage("You can only be in 10 channels at a time.");
+            return;
+        }
+        
         if (bans.contains(player.getName())) {
             player.sendMessage("You are banned from that channel.");
             return;

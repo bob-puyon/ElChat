@@ -34,6 +34,7 @@ public abstract class Channel {
     protected boolean autoJoin;
     protected String messageFormat;
     protected String channelFormat;
+    protected String romaToHiraFormat;
     protected boolean romaToHira;
     protected List<String> forwards;
     protected boolean announce = false;
@@ -50,7 +51,7 @@ public abstract class Channel {
         type = section.getString("type");
         if (section.contains("auto-join")) this.autoJoin = section.getBoolean("auto-join", false);
         messageFormat = section.getString("message-format", null);
-        channelFormat = section.getString("chanel-format", null);
+        channelFormat = section.getString("channel-format", null);
         if (section.contains("roma-to-hira")) romaToHira = section.getBoolean("roma-to-hira", false);
         if (section.contains("forwards")) {
             forwards = section.getStringList("forwards");
@@ -64,7 +65,7 @@ public abstract class Channel {
         section.set("type", type);
         section.set("auto-join", autoJoin);
         section.set("message-format", messageFormat);
-        section.set("join-format", channelFormat);
+        section.set("channel-format", channelFormat);
         section.set("roma-to-hira", romaToHira);
         section.set("forwards", forwards);
         section.set("announce", announce);
@@ -81,7 +82,10 @@ public abstract class Channel {
                 if (!RomaToHira.hasHiragana(cleanMessage)) {
                     String hiraMessage = RomaToHira.convert(cleanMessage);
                     if (!hiraMessage.equals(cleanMessage)) {
-                        ((ChatMessage) message).setMessage(textMessage + " &f(" + hiraMessage + ")");
+                        String format = getRomaToHiraFormat();
+                        format = format.replace("{message}", textMessage);
+                        format = format.replace("{converted}", hiraMessage);
+                        ((ChatMessage) message).setMessage(format);
                     }
                 }
             }
@@ -188,6 +192,11 @@ public abstract class Channel {
     public String getChannelFormat() {
         if (channelFormat == null) return ElChatPlugin.getPlugin().getConfig().getString("global.channel-format");
         return channelFormat;
+    }
+
+    public String getRomaToHiraFormat() {
+        if (romaToHiraFormat == null) return ElChatPlugin.getPlugin().getConfig().getString("global.roma-to-hira-format");
+        return romaToHiraFormat;
     }
 
 
