@@ -18,11 +18,10 @@ package jp.commun.minecraft.elchat.channel;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
 import jp.commun.minecraft.elchat.ElChatPlugin;
+import jp.commun.minecraft.elchat.PermissionsExAdapter;
 import jp.commun.minecraft.elchat.RomaToHira;
 import jp.commun.minecraft.elchat.message.*;
 import org.bukkit.configuration.ConfigurationSection;
-import ru.tehkode.permissions.PermissionManager;
-import ru.tehkode.permissions.PermissionUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,13 +156,14 @@ public abstract class Channel {
         if (sender != null) {
             format = format.replace("{world}", sender.getPlayer().getWorld().getName());
             format = format.replace("{player}", sender.getName());
-            PermissionManager permissionManager = ElChatPlugin.getPlugin().getPermissionsExManager();
-            if (permissionManager != null) {
-                PermissionUser user = permissionManager.getUser(sender.getPlayer());
-                if (user != null) {
-                    if (user.getPrefix() != null) userPrefix = user.getPrefix();
-                    if (user.getSuffix() != null) userSuffix = user.getSuffix();
-                }
+
+            PermissionsExAdapter permissionsExAdapter = ElChatPlugin.getPlugin().getPermissionsExAdapter();
+            if (permissionsExAdapter.isAvailable()) {
+                String result;
+                result = permissionsExAdapter.getUserPrefix(sender.getPlayer());
+                if (result != null) userSuffix = result;
+                result = permissionsExAdapter.getUserSuffix(sender.getPlayer());
+                if (result != null) userSuffix = result;
             }
         } else {
             format = format.replace("{world}", "");

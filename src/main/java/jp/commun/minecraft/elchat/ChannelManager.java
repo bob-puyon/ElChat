@@ -64,25 +64,27 @@ public class ChannelManager {
             defaultChannel = config.getString("default-channel");
         }
 
-        for (String name : config.getConfigurationSection("channels").getKeys(false)) {
-            Channel channel;
-            ConfigurationSection section = config.getConfigurationSection("channels." + name);
-            String type = section.getString("type", "");
+        if (config.contains("channels")) {
+            for (String name : config.getConfigurationSection("channels").getKeys(false)) {
+                Channel channel;
+                ConfigurationSection section = config.getConfigurationSection("channels." + name);
+                String type = section.getString("type", "");
 
-            if (channels.containsKey(name)) {
-                channel = channels.get(name);
-            } else if (type.equals("dynmap")) {
-                channel = new DynmapChannel(name);
-            } else if (type.equals("plugin")) {
-                channel = new PluginChannel(name);
-            } else {
-                channel = new GameChannel(name);
+                if (channels.containsKey(name)) {
+                    channel = channels.get(name);
+                } else if (type.equals("dynmap")) {
+                    channel = new DynmapChannel(name);
+                } else if (type.equals("plugin")) {
+                    channel = new PluginChannel(name);
+                } else {
+                    channel = new GameChannel(name);
+                }
+                channel.loadConfig(section);
+                addChannel(channel);
             }
-            channel.loadConfig(section);
-            addChannel(channel);
         }
 
-        if (defaultChannel == null || getDefaultChannel() == null) {
+        if (defaultChannel == null || getDefaultChannel() == null && channels.size() > 0) {
             defaultChannel = channels.keySet().iterator().next();
         }
     }

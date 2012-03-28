@@ -39,8 +39,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.dynmap.DynmapAPI;
-import ru.tehkode.permissions.PermissionManager;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
     private static ElChatPlugin plugin;
@@ -50,7 +48,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
     private ChannelManager channelManager;
     private RomaToHiraData romaToHiraData;
 
-    private PermissionManager permissionsExManager;
+    private PermissionsExAdapter permissionsExAdapter;
     private DynmapAPI dynmapAPI;
 
     @Override
@@ -77,6 +75,8 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
         ircManager.loadConfig();
         ircManager.connect();
 
+        permissionsExAdapter = new PermissionsExAdapter(this);
+
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new PlayerListener(this), this);
@@ -85,7 +85,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
 
         Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
         if (permissionsExPlugin != null) {
-            this.setPermissionsExPlugin(permissionsExPlugin);
+            permissionsExAdapter.setPermissionsEx(permissionsExPlugin);
         }
 
         Plugin dynmapPlugin = pm.getPlugin("dynmap");
@@ -129,19 +129,6 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
         return plugin;
     }
 
-    public void setPermissionsExPlugin(Plugin permissionsExPlugin) {
-        if (permissionsExPlugin != null) {
-            getLogger().info("PermissionsEx detected! using: " + permissionsExPlugin.getDescription().getFullName());
-            this.permissionsExManager = PermissionsEx.getPermissionManager();
-        } else {
-            this.permissionsExManager = null;
-        }
-    }
-
-    public PermissionManager getPermissionsExManager() {
-        return this.permissionsExManager;
-    }
-
     private void setDynmapPlugin(Plugin dynmapPlugin) {
         if (dynmapPlugin instanceof DynmapAPI) {
             dynmapAPI = (DynmapAPI) dynmapPlugin;
@@ -159,6 +146,10 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
 
     public DynmapAPI getDynmapAPI() {
         return dynmapAPI;
+    }
+
+    public PermissionsExAdapter getPermissionsExAdapter() {
+        return permissionsExAdapter;
     }
 
     public void loadConfiguration() {
