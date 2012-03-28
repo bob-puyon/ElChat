@@ -17,6 +17,7 @@
 package jp.commun.minecraft.elchat.channel;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
+import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.message.ChatMessage;
 import jp.commun.minecraft.elchat.message.Message;
 import org.bukkit.configuration.ConfigurationSection;
@@ -100,6 +101,7 @@ public class GameChannel extends Channel {
             }
             recipient.sendMessage(formattedMessage.replace("{channelno}", channelNo));
         }
+        ElChatPlugin.getPlugin().getLogger().info(formattedMessage.replace("{channelno}", ""));
     }
 
     @Override

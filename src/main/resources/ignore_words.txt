@@ -3,6 +3,7 @@ tnt
 wiki
 chest
 creeper
+elchat
 thanks
 thank
 house
@@ -14,6 +15,7 @@ axe
 shovel
 door
 admin
+mod
 wb
 welcome
 back
