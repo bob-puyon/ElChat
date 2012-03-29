@@ -18,5 +18,5 @@ channels:
     forwards: []
   dynmap:
     title: 'Dynmap'
-    routes: [ global ]
+    forwards: [ global ]
 

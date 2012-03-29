@@ -161,7 +161,7 @@ public abstract class Channel {
             if (permissionsExAdapter.isAvailable()) {
                 String result;
                 result = permissionsExAdapter.getUserPrefix(sender.getPlayer());
-                if (result != null) userSuffix = result;
+                if (result != null) userPrefix = result;
                 result = permissionsExAdapter.getUserSuffix(sender.getPlayer());
                 if (result != null) userSuffix = result;
             }

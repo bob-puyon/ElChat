@@ -84,15 +84,13 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
         pm.registerEvents(new IRCListener(this), this);
 
         Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
-        if (permissionsExPlugin != null) {
-            permissionsExAdapter.setPermissionsEx(permissionsExPlugin);
-        }
+        permissionsExAdapter.setPermissionsEx(permissionsExPlugin);
 
         Plugin dynmapPlugin = pm.getPlugin("dynmap");
         if (dynmapPlugin != null) {
             this.setDynmapPlugin(dynmapPlugin);
             if (dynmapAPI != null) {
-                getLogger().info("found dynmap API!");
+                getLogger().info("dynmap detected. using: " + dynmapPlugin.getDescription().getFullName());
                 pm.registerEvents(new DynmapListener(this), this);
             }
         }

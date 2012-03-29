@@ -1,6 +1,9 @@
 name: ElChat
 main: jp.commun.minecraft.elchat.ElChatPlugin
 version: ${project.version}
+description: Flexible Channel Chat
+author: ayunyan
+website: http://minecraft.commun.jp/
 softdepends: [ PermissionsEx, dynmap ]
 commands:
     elchat:

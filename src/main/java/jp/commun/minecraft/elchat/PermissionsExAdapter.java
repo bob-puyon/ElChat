@@ -17,7 +17,7 @@ public class PermissionsExAdapter {
 
     public void setPermissionsEx(Plugin plugin) {
         if (plugin != null) {
-            plugin.getLogger().info("PermissionsEx detected! using: " + plugin.getDescription().getFullName());
+            this.plugin.getLogger().info("PermissionsEx detected. using: " + plugin.getDescription().getFullName());
             permissionManager = PermissionsEx.getPermissionManager();
             available = true;
         } else {
