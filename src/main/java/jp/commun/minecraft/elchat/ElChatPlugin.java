@@ -84,7 +84,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
         pm.registerEvents(new IRCListener(this), this);
 
         Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
-        permissionsExAdapter.setPermissionsEx(permissionsExPlugin);
+        permissionsExAdapter.setPlugin(permissionsExPlugin);
 
         Plugin dynmapPlugin = pm.getPlugin("dynmap");
         if (dynmapPlugin != null) {

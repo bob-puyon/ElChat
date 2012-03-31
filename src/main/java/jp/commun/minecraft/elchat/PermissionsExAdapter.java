@@ -6,18 +6,18 @@ import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-public class PermissionsExAdapter {
-    private ElChatPlugin plugin;
+public class PermissionsExAdapter extends PluginAdapter {
     private boolean available = false;
     private PermissionManager permissionManager;
 
     public PermissionsExAdapter(ElChatPlugin plugin) {
-        this.plugin = plugin;
+        super(plugin);
     }
 
-    public void setPermissionsEx(Plugin plugin) {
-        if (plugin != null) {
-            this.plugin.getLogger().info("PermissionsEx detected. using: " + plugin.getDescription().getFullName());
+    @Override
+    public void setPlugin(Plugin permissionsExPlugin) {
+        if (permissionsExPlugin != null) {
+            this.plugin.getLogger().info("PermissionsEx detected. using: " + permissionsExPlugin.getDescription().getFullName());
             permissionManager = PermissionsEx.getPermissionManager();
             available = true;
         } else {
@@ -26,15 +26,11 @@ public class PermissionsExAdapter {
         }
     }
 
-    public boolean isAvailable() {
-        return available;
-    }
-
     public PermissionManager getPermissionManager() {
         return permissionManager;
     }
     
-    public String getUserPrefix(Player player) {
+    public String getPlayerPrefix(Player player) {
         PermissionUser user = permissionManager.getUser(player);
         if (user != null) {
             return user.getPrefix();
@@ -43,7 +39,7 @@ public class PermissionsExAdapter {
         }
     }
 
-    public String getUserSuffix(Player player) {
+    public String getPlayerSuffix(Player player) {
         PermissionUser user = permissionManager.getUser(player);
         if (user != null) {
             return user.getSuffix();

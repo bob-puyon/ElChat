@@ -18,7 +18,6 @@ package jp.commun.minecraft.elchat.channel;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
 import jp.commun.minecraft.elchat.ElChatPlugin;
-import jp.commun.minecraft.elchat.PermissionsExAdapter;
 import jp.commun.minecraft.elchat.RomaToHira;
 import jp.commun.minecraft.elchat.message.*;
 import org.bukkit.configuration.ConfigurationSection;
@@ -151,26 +150,20 @@ public abstract class Channel {
 
     public String formatPlayer(String format, PlayerMessage message) {
         ChatPlayer sender = message.getPlayer();
-        String userPrefix = "";
-        String userSuffix = "";
+        String playerPrefix = "";
+        String playerSuffix = "";
         if (sender != null) {
             format = format.replace("{world}", sender.getPlayer().getWorld().getName());
             format = format.replace("{player}", sender.getName());
 
-            PermissionsExAdapter permissionsExAdapter = ElChatPlugin.getPlugin().getPermissionsExAdapter();
-            if (permissionsExAdapter.isAvailable()) {
-                String result;
-                result = permissionsExAdapter.getUserPrefix(sender.getPlayer());
-                if (result != null) userPrefix = result;
-                result = permissionsExAdapter.getUserSuffix(sender.getPlayer());
-                if (result != null) userSuffix = result;
-            }
+            playerPrefix = sender.getPrefix();
+            playerSuffix = sender.getSuffix();
         } else {
             format = format.replace("{world}", "");
             format = format.replace("{player}", ((ChatMessage) message).getPlayerName());
         }
-        format = format.replace("{prefix}", userPrefix);
-        format = format.replace("{suffix}", userSuffix);
+        format = format.replace("{prefix}", playerPrefix);
+        format = format.replace("{suffix}", playerSuffix);
         return format;
     }
 

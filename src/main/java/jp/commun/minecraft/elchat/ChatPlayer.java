@@ -37,6 +37,8 @@ public class ChatPlayer {
     private final FileConfiguration config;
     private Map<String, Channel> channels;
     private Channel currentChannel;
+    private String prefix;
+    private String suffix;
 
     public ChatPlayer(Player player) {
         this.player = player;
@@ -73,11 +75,16 @@ public class ChatPlayer {
                     currentChannel = channels.get(defaultChannel);
                 }
             }
+            
+            suffix = config.getString("suffix");
+            prefix = config.getString("prefix");
         }
     }
 
     public void saveConfig() throws IOException {
         config.set("channels", new ArrayList<String>(channels.keySet()));
+        config.set("prefix", prefix);
+        config.set("suffix", suffix);
         config.save(configFile);
     }
 
@@ -154,6 +161,32 @@ public class ChatPlayer {
 
     public boolean hasChannel(Channel channel) {
         return channels.containsValue(channel);
+    }
+
+    public String getPrefix() {
+        if (prefix != null && prefix.length() > 0) return prefix;
+        if (ElChatPlugin.getPlugin().getPermissionsExAdapter().isAvailable()) {
+            String result = ElChatPlugin.getPlugin().getPermissionsExAdapter().getPlayerPrefix(player);
+            if (result != null) return result;
+        }
+        return "";
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String getSuffix() {
+        if (suffix != null && suffix.length() > 0) return suffix;
+        if (ElChatPlugin.getPlugin().getPermissionsExAdapter().isAvailable()) {
+            String result = ElChatPlugin.getPlugin().getPermissionsExAdapter().getPlayerSuffix(player);
+            if (result != null) return result;
+        }
+        return "";
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
     @Override
