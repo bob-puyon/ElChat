@@ -21,6 +21,7 @@ import jp.commun.minecraft.elchat.channel.IRCChannel;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -108,14 +109,15 @@ public class IRCManager {
             Bot bot = bots.get(name);
             if (bot.isConnected() || !bot.isRetryEnabled() || !bot.isEnabled()) continue;
 
-            plugin.getLogger().info("connecting " + bot.getHost());
-
             try {
                 bot.connect();
-            } catch (IOException e) {
-                plugin.getLogger().info("IRC: " + bot.getHost() + " connect failed.");
+            } catch (ConnectException e) {
+                plugin.getLogger().info("IRC: " + bot.getHost() + ": connect failed. (" + e.getMessage() + ")");
 
-                e.printStackTrace();
+                needReconnect = true;
+            } catch (IOException e) {
+                plugin.getLogger().info("IRC: " + bot.getHost() + ": connect failed. (" + e.getMessage() + ")");
+
                 needReconnect = true;
             }
         }

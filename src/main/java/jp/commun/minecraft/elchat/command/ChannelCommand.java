@@ -39,7 +39,7 @@ public class ChannelCommand implements CommandHandler {
         this.plugin = plugin;
     }
 
-    @Command(names = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}, allowConsole = false)
+    @Command(names = {"1", "2", "3", "4", "5", "6", "7", "8", "9"}, allowConsole = false, desc = "switch channel.")
     public void message(CommandSender sender, String commandName, String[] args) {
         ChatPlayer player = plugin.getPlayerManager().getPlayer(sender.getName());
         int channelNo = Integer.parseInt(commandName);
@@ -58,7 +58,7 @@ public class ChannelCommand implements CommandHandler {
         }
     }
 
-    @Command(names = {"channel list", "ch list"}, permissions = {"elchat.channel.list"}, allowConsole = false)
+    @Command(names = {"channel list", "ch list"}, permissions = {"elchat.channel.list"}, allowConsole = false, desc = "active channel list")
     public void list(CommandSender sender, String commandName, String[] args) {
         ChatPlayer player = plugin.getPlayerManager().getPlayer(sender.getName());
 
@@ -274,30 +274,47 @@ public class ChannelCommand implements CommandHandler {
 
     @Command(names = {"channel set", "ch set"}, permissions = {"elchat.channel.set"}, min = 3)
     public void set(CommandSender sender, String commandName, String[] args) {
+        Channel channel;
+        ChatPlayer player = null;
         if (sender instanceof ConsoleCommandSender) {
-            Channel channel = plugin.getChannelManager().getChannel(args[0]);
-            if (channel != null) {
+            channel = plugin.getChannelManager().getChannel(args[0]);
+
+            if (channel == null) {
+                sender.sendMessage("no such channel.");
+                return;
+            }
+        } else {
+            player = plugin.getPlayerManager().getPlayer(sender.getName());
+            channel = plugin.getChannelManager().getChannel(args[0], player);
+
+            if (channel == null || !(channel instanceof GameChannel)) {
                 sender.sendMessage("no such channel.");
                 return;
             }
 
-            if (args[1].equals("title")) {
-                channel.setTitle(args[2]);
-            } else if (args[1].equals("auto-join")) {
-                channel.setAutoJoin(Boolean.parseBoolean(args[3]));
-            } else if (args[1].equals("announce")) {
-                channel.setAnnounce(Boolean.parseBoolean(args[3]));
-            } else if (args[1].equals("hop-announce")) {
-                channel.setForwardAnnounce(Boolean.parseBoolean(args[3]));
-            } else if (args[1].equals("roma-to-hira")) {
-                channel.setRomaToHira(Boolean.parseBoolean(args[3]));
-
-            } else {
-                sender.sendMessage("Unknown property: " + args[1]);
+            if (!((GameChannel)channel).getOwner().equals(sender.getName())) {
+                sender.sendMessage("You're not owner.");
                 return;
             }
-
-            sender.sendMessage("property updated.");
         }
+
+        if (args[1].equals("title")) {
+            channel.setTitle(args[2]);
+        } else if (args[1].equals("auto-join")) {
+            channel.setAutoJoin(Boolean.parseBoolean(args[2]));
+        } else if (args[1].equals("announce")) {
+            channel.setAnnounce(Boolean.parseBoolean(args[2]));
+        } else if (args[1].equals("forward-announce")) {
+            channel.setForwardAnnounce(Boolean.parseBoolean(args[2]));
+        } else if (args[1].equals("roma-to-hira")) {
+            channel.setRomaToHira(Boolean.parseBoolean(args[2]));
+        } else if (args[1].equals("password") && channel instanceof GameChannel) {
+            ((GameChannel)channel).setPassword(args[2]);
+        } else {
+            sender.sendMessage("Unknown property: " + args[1]);
+            return;
+        }
+
+        sender.sendMessage("property updated.");
     }
 }

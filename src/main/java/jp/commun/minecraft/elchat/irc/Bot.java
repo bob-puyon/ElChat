@@ -84,14 +84,16 @@ public class Bot extends IrcAdaptor {
 
     public void connect() throws IOException {
         if (connection == null) {
-            this.connection = new IrcConnection(getHost(), getPort());
-            this.connection.setNick(getNick());
-            if (getCharset() != null && Charset.isSupported(getCharset())) {
-                Charset charset = Charset.forName(getCharset());
-                this.connection.setCharset(charset);
-            }
-            this.connection.addServerListener(this);
-            this.connection.addMessageListener(this);
+            connection = new IrcConnection();
+            connection.setNick(getNick());
+
+            connection.addServerListener(this);
+            connection.addMessageListener(this);
+        }
+        connection.setServer(host, port);
+        if (getCharset() != null && Charset.isSupported(getCharset())) {
+            Charset charset = Charset.forName(getCharset());
+            connection.setCharset(charset);
         }
 
         if (isConnected()) return;
