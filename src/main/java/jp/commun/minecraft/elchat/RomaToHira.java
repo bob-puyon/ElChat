@@ -371,7 +371,7 @@ public class RomaToHira {
                 Boolean match = false;
 
                 if (wordLen >= j + 2 && word.substring(j, j + 1).equals(word.substring(j + 1, j + 2))) {
-                    j += 2;
+                    j += 1;
                     sb.append("っ");
                     continue;
                 }
