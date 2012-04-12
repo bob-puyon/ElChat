@@ -31,6 +31,8 @@ import jp.commun.minecraft.elchat.message.Message;
 import jp.commun.minecraft.elchat.message.PluginMessage;
 import jp.commun.minecraft.util.command.CommandManager;
 import jp.commun.minecraft.util.command.CommandPermissionException;
+import jp.commun.minecraft.util.permission.Permission;
+import jp.commun.minecraft.util.permission.PermissionFactory;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
@@ -47,8 +49,7 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
     private PlayerManager playerManager;
     private ChannelManager channelManager;
     private RomaToHiraData romaToHiraData;
-
-    private PermissionsExAdapter permissionsExAdapter;
+    private Permission permission;
     private DynmapAPI dynmapAPI;
 
     @Override
@@ -75,16 +76,12 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
         ircManager.loadConfig();
         ircManager.connect();
 
-        permissionsExAdapter = new PermissionsExAdapter(this);
-
         PluginManager pm = getServer().getPluginManager();
 
         pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new ServerListener(this), this);
         pm.registerEvents(new IRCListener(this), this);
 
-        Plugin permissionsExPlugin = pm.getPlugin("PermissionsEx");
-        permissionsExAdapter.setPlugin(permissionsExPlugin);
 
         Plugin dynmapPlugin = pm.getPlugin("dynmap");
         if (dynmapPlugin != null) {
@@ -94,6 +91,8 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
                 pm.registerEvents(new DynmapListener(this), this);
             }
         }
+
+        permission = PermissionFactory.getPermission(this);
 
         getLogger().info("ElChat enabled!");
     }
@@ -146,10 +145,6 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
         return dynmapAPI;
     }
 
-    public PermissionsExAdapter getPermissionsExAdapter() {
-        return permissionsExAdapter;
-    }
-
     public void loadConfiguration() {
         FileConfiguration config = plugin.getConfig();
         config.options().copyDefaults(true);
@@ -158,6 +153,10 @@ public class ElChatPlugin extends JavaPlugin implements ElChatAPI {
 
     public void disablePlugin() {
         this.getPluginLoader().disablePlugin(this);
+    }
+
+    public Permission getPermission() {
+        return permission;
     }
 
     public IRCManager getIRCManager() {

@@ -314,14 +314,18 @@ public class RomaToHira {
         put("gg", "っ");
         put("hh", "っ");
         put("jj", "っ");
+        put("kka", "っか");
         put("kki", "っき");
         put("kku", "っく");
+        put("kke", "っけ");
         put("kko", "っこ");
         put("kkyo", "っきょ");
         put("ll", "っ");
         put("mm", "っ");
+        put("ppa", "っぱ");
         put("ppi", "っぴ");
         put("ppu", "っぷ");
+        put("ppe", "っぺ");
         put("ppo", "っぽ");
         put("qq", "っ");
         put("rr", "っ");
@@ -365,6 +369,12 @@ public class RomaToHira {
             int wordLen = word.length();
             for (int j = 0; j < wordLen; j++) {
                 Boolean match = false;
+
+                if (wordLen >= j + 2 && word.substring(j, j + 1).equals(word.substring(j + 1, j + 2))) {
+                    j += 2;
+                    sb.append("っ");
+                    continue;
+                }
 
                 for (int k = 4; k > 0; k--) {
                     if (wordLen < j + k) continue;

@@ -91,7 +91,7 @@ public class ChannelCommand implements CommandHandler {
             channel = plugin.getChannelManager().getChannel(args[0], player);
         }
 
-        if (channel == null || !(channel instanceof GameChannel)) {
+        if (channel == null) {
             sender.sendMessage("no such channel.");
             return;
         }
@@ -100,14 +100,23 @@ public class ChannelCommand implements CommandHandler {
         sender.sendMessage(ChatColor.AQUA + "Name: " + ChatColor.WHITE + channel.getName());
         sender.sendMessage(ChatColor.AQUA + "Title: " + ChatColor.WHITE + channel.getTitle());
 
-        GameChannel gameChannel = (GameChannel) channel;
-        sender.sendMessage(ChatColor.AQUA + "Moderation: " + ChatColor.WHITE + String.valueOf(gameChannel.isModeration()));
-        if (gameChannel.getOwner() != null) {
-            sender.sendMessage(ChatColor.AQUA + "Owner: " + ChatColor.WHITE + gameChannel.getOwner());
-        } else {
-            sender.sendMessage(ChatColor.AQUA + "Owner: " + ChatColor.WHITE + "none");
+        sender.sendMessage(ChatColor.AQUA + "Announce: " + ChatColor.WHITE + String.valueOf(channel.isAnnounce()));
+        sender.sendMessage(ChatColor.AQUA + "ForwardAnnounce: " + ChatColor.WHITE + String.valueOf(channel.isForwardAnnounce()));
+        sender.sendMessage(ChatColor.AQUA + "Forwards: " + ChatColor.WHITE + StringUtils.join(channel.getForwards(), ", "));
+
+        sender.sendMessage(ChatColor.AQUA + "RomaToHira: " + ChatColor.WHITE + String.valueOf(channel.isRomaToHira()));
+
+        if (channel instanceof GameChannel) {
+            GameChannel gameChannel = (GameChannel) channel;
+            sender.sendMessage(ChatColor.AQUA + "AutoJoin: " + ChatColor.WHITE + String.valueOf(gameChannel.isAutoJoin()));
+            sender.sendMessage(ChatColor.AQUA + "Moderation: " + ChatColor.WHITE + String.valueOf(gameChannel.isModeration()));
+            if (gameChannel.getOwner() != null) {
+                sender.sendMessage(ChatColor.AQUA + "Owner: " + ChatColor.WHITE + gameChannel.getOwner());
+            } else {
+                sender.sendMessage(ChatColor.AQUA + "Owner: " + ChatColor.WHITE + "none");
+            }
+            sender.sendMessage(ChatColor.AQUA + "Moderators: " + ChatColor.WHITE + StringUtils.join(gameChannel.getModerators(), ", "));
         }
-        sender.sendMessage(ChatColor.AQUA + "Moderators: " + ChatColor.WHITE + StringUtils.join(gameChannel.getModerators(), ", "));
     }
 
     @Command(names = {"channel who", "ch who"}, permissions = {"elchat.channel.who"}, min = 1)
@@ -298,17 +307,17 @@ public class ChannelCommand implements CommandHandler {
             }
         }
 
-        if (args[1].equals("title")) {
+        if (args[1].equals("title") && sender.hasPermission("elchat.channel.set.title")) {
             channel.setTitle(args[2]);
-        } else if (args[1].equals("auto-join")) {
+        } else if (args[1].equals("auto-join") && sender.hasPermission("elchat.channel.set.auto-join")) {
             channel.setAutoJoin(Boolean.parseBoolean(args[2]));
-        } else if (args[1].equals("announce")) {
+        } else if (args[1].equals("announce") && sender.hasPermission("elchat.channel.set.announce")) {
             channel.setAnnounce(Boolean.parseBoolean(args[2]));
-        } else if (args[1].equals("forward-announce")) {
+        } else if (args[1].equals("forward-announce") && sender.hasPermission("elchat.channel.set.forward-announce")) {
             channel.setForwardAnnounce(Boolean.parseBoolean(args[2]));
-        } else if (args[1].equals("roma-to-hira")) {
+        } else if (args[1].equals("roma-to-hira") && sender.hasPermission("elchat.channel.set.roma-to-hira")) {
             channel.setRomaToHira(Boolean.parseBoolean(args[2]));
-        } else if (args[1].equals("password") && channel instanceof GameChannel) {
+        } else if (args[1].equals("password") && channel instanceof GameChannel && sender.hasPermission("elchat.channel.set.password")) {
             ((GameChannel)channel).setPassword(args[2]);
         } else {
             sender.sendMessage("Unknown property: " + args[1]);

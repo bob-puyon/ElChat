@@ -34,15 +34,9 @@ public class ServerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPluginEnable(PluginEnableEvent event) {
-        if (event.getPlugin().getDescription().getName().equals("PermissionsEx")) {
-            this.plugin.getPermissionsExAdapter().setPlugin(event.getPlugin());
-        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPluginDisable(PluginDisableEvent event) {
-        if (event.getPlugin().getDescription().getName().equals("PermissionsEx")) {
-            this.plugin.getPermissionsExAdapter().setPlugin(null);
-        }
     }
 }

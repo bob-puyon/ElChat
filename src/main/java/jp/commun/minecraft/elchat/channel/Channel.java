@@ -150,18 +150,21 @@ public abstract class Channel {
 
     public String formatPlayer(String format, PlayerMessage message) {
         ChatPlayer sender = message.getPlayer();
+        String playerGroup = "";
         String playerPrefix = "";
         String playerSuffix = "";
         if (sender != null) {
             format = format.replace("{world}", sender.getPlayer().getWorld().getName());
             format = format.replace("{player}", sender.getName());
 
+            playerGroup = sender.getGroup();
             playerPrefix = sender.getPrefix();
             playerSuffix = sender.getSuffix();
         } else {
             format = format.replace("{world}", "");
             format = format.replace("{player}", ((ChatMessage) message).getPlayerName());
         }
+        format = format.replace("{group}", playerGroup);
         format = format.replace("{prefix}", playerPrefix);
         format = format.replace("{suffix}", playerSuffix);
         return format;

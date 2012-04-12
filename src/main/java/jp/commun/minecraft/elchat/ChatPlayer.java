@@ -18,6 +18,7 @@ package jp.commun.minecraft.elchat;
 
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.GameChannel;
+import jp.commun.minecraft.util.permission.Permission;
 import org.bukkit.Location;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -165,8 +166,9 @@ public class ChatPlayer {
 
     public String getPrefix() {
         if (prefix != null && prefix.length() > 0) return prefix;
-        if (ElChatPlugin.getPlugin().getPermissionsExAdapter().isAvailable()) {
-            String result = ElChatPlugin.getPlugin().getPermissionsExAdapter().getPlayerPrefix(player);
+        Permission permission = ElChatPlugin.getPlugin().getPermission();
+        if (permission != null) {
+            String result = permission.getPlayerPrefix(player);
             if (result != null) return result;
         }
         return "";
@@ -178,8 +180,9 @@ public class ChatPlayer {
 
     public String getSuffix() {
         if (suffix != null && suffix.length() > 0) return suffix;
-        if (ElChatPlugin.getPlugin().getPermissionsExAdapter().isAvailable()) {
-            String result = ElChatPlugin.getPlugin().getPermissionsExAdapter().getPlayerSuffix(player);
+        Permission permission = ElChatPlugin.getPlugin().getPermission();
+        if (permission != null) {
+            String result = permission.getPlayerSuffix(player);
             if (result != null) return result;
         }
         return "";
@@ -187,6 +190,15 @@ public class ChatPlayer {
 
     public void setSuffix(String suffix) {
         this.suffix = suffix;
+    }
+
+    public String getGroup() {
+        Permission permission = ElChatPlugin.getPlugin().getPermission();
+        if (permission != null) {
+            String result = permission.getGroup(player);
+            if (result != null) return result;
+        }
+        return "";
     }
 
     @Override

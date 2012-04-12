@@ -70,7 +70,25 @@ permissions:
         description: Allows you to list channel users
         default: true
     elchat.channel.set:
-        description: Allows you to info channel
+        description: Allows you to modify channel property.
+        default: true
+    elchat.channel.set.autojoin:
+        description: Allows you to modify autojoin property.
+        default: op
+    elchat.channel.set.title:
+        description: Allows you to modify title property.
+        default: true
+    elchat.channel.set.announce:
+        description: Allows you to modify announce property.
+        default: true
+    elchat.channel.set.forward-announce:
+        description: Allows you to modify forward-announce property.
+        default: op
+    elchat.channel.set.roma-to-hira:
+        description: Allows you to modify roma-to-hira property.
+        default: true
+    elchat.channel.set.password:
+        description: Allows you to modify password property.
         default: true
     elchat.channel.ban:
         description: Allows you to ban channel user

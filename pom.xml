@@ -31,10 +31,6 @@
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>tehkode-repo</id>
-            <url>http://repo.tehkode.ru/repository/bukkit-plugins/</url>
-        </repository>
-        <repository>
             <id>commun-repo</id>
             <url>http://mvn2.commun.jp/</url>
         </repository>
@@ -56,12 +52,7 @@
         <dependency>
             <groupId>jp.commun</groupId>
             <artifactId>minecraftutils</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.tehkode</groupId>
-            <artifactId>PermissionsEx</artifactId>
-            <version>1.18</version>
+            <version>1.0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.dynmap</groupId>
