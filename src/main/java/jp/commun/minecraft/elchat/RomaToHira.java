@@ -370,8 +370,9 @@ public class RomaToHira {
             for (int j = 0; j < wordLen; j++) {
                 Boolean match = false;
 
-                if (wordLen >= j + 2 && word.substring(j, j + 1).equals(word.substring(j + 1, j + 2))) {
-                    j += 1;
+	            String w = word.substring(j, j + 1);
+                if (wordLen >= j + 2 && w.equals(word.substring(j + 1, j + 2)) &&
+		                !w.equals("a") && !w.equals("i") && !w.equals("u") && !w.equals("e") && !w.equals("o") && !w.equals("n")) {
                     sb.append("っ");
                     continue;
                 }
