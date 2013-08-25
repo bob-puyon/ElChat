@@ -22,11 +22,11 @@ import java.util.Map;
 public class IRCColor {
     private static final Map<String, String> COLOR_MAP = new HashMap<String, String>() {{
         //put("00", "f"); // white
-        put("01", "0"); // black
+        put("01", "f"); // black
         put("02", "1"); // dark blue
         put("03", "2"); // dark green
-        put("04", "4"); // red
-        put("05", "8"); // brown
+        put("04", "c"); // red
+        put("05", "4"); // brown
         put("06", "5"); // purple
         put("07", "6"); // olive
         put("08", "e"); // yellow
@@ -35,7 +35,7 @@ public class IRCColor {
         put("11", "b"); // cyan
         put("12", "9"); // blue
         put("13", "d"); // magenta
-        put("14", "c"); // dark gray
+        put("14", "8"); // dark gray
         put("15", "7"); // light gray
     }};
 
