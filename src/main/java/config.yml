@@ -1,18 +1,18 @@
 global:
-  message-format: '[{channelno}{channel}] [{prefix}{player}{suffix}&f] {message}'
+  message-format: '{channel} : {prefix}<{player}>{suffix}&f {message}'
   channel-format: '[{channelno}{channel}] {message}'
   roma-to-hira-format: '{message} &f({converted})'
 irc:
   default-say: false
   networks:
-    freenode:
+    ircnet:
       enabled: false
-      host: irc.freenode.net
+      host: irc.ircnet.ne.jp
       port: 6667
       nick: ElChat
       charset: UTF-8
       channels:
-        '#YourChannel':
-          title: IRC
+        '#arle-puyon':
+          title: '&9IRC&f'
           forwards: [ global, dynmap ]
 

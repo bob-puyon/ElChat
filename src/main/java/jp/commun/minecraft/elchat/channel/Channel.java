@@ -16,14 +16,20 @@
 
 package jp.commun.minecraft.elchat.channel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jp.commun.minecraft.elchat.ChatPlayer;
 import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.RomaToHira;
-import jp.commun.minecraft.elchat.message.*;
-import org.bukkit.configuration.ConfigurationSection;
+import jp.commun.minecraft.elchat.message.AnnounceMessage;
+import jp.commun.minecraft.elchat.message.ChannelMessage;
+import jp.commun.minecraft.elchat.message.ChatMessage;
+import jp.commun.minecraft.elchat.message.Message;
+import jp.commun.minecraft.elchat.message.PlayerMessage;
+import jp.commun.minecraft.elchat.message.PluginMessage;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.configuration.ConfigurationSection;
 
 public abstract class Channel {
     protected String name;
@@ -83,6 +89,10 @@ public abstract class Channel {
                         String format = getRomaToHiraFormat();
                         format = format.replace("{message}", textMessage);
                         format = format.replace("{converted}", hiraMessage);
+
+                        // Add Converted Field for Dynmap
+                        ((ChatMessage) message).setConvertedMessage(hiraMessage);
+
                         ((ChatMessage) message).setMessage(format);
                     }
                 }

@@ -20,6 +20,7 @@ import jp.commun.minecraft.elchat.ChatPlayer;
 
 public class ChatMessage extends PlayerMessage {
     protected String message;
+    protected String converted;
 
     public ChatMessage(ChatPlayer player, String message) {
         super(player);
@@ -37,5 +38,13 @@ public class ChatMessage extends PlayerMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getConvertedMessage() {
+        return converted;
+    }
+
+    public void setConvertedMessage(String converted) {
+        this.converted = converted;
     }
 }

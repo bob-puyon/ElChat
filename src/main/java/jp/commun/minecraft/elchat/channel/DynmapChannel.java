@@ -18,7 +18,9 @@ package jp.commun.minecraft.elchat.channel;
 
 import jp.commun.minecraft.elchat.ChatPlayer;
 import jp.commun.minecraft.elchat.ElChatPlugin;
+import jp.commun.minecraft.elchat.message.ChatMessage;
 import jp.commun.minecraft.elchat.message.Message;
+
 import org.dynmap.DynmapAPI;
 
 public class DynmapChannel extends Channel {
@@ -34,7 +36,14 @@ public class DynmapChannel extends Channel {
         if (!message.getChannel().equals(this)) {
             DynmapAPI dynmapAPI = ElChatPlugin.getPlugin().getDynmapAPI();
             if (dynmapAPI != null) {
-                dynmapAPI.sendBroadcastToWeb(null, formatMessage(message));
+            	if( message instanceof ChatMessage ){
+            		String hira = ((ChatMessage)message).getConvertedMessage();
+            		if(hira != null){
+            			dynmapAPI.sendBroadcastToWeb(null, (" [日本語変換] : " + hira));
+            		}
+            	}else{
+            		dynmapAPI.sendBroadcastToWeb(null, formatMessage(message));
+            	}
             }
         }
     }

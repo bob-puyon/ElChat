@@ -1,15 +1,15 @@
 default-channel: global
 channels:
   global:
-    title: 'Global'
+    title: '&6G&f'
     auto-join: true
     roma-to-hira: true
     announce: false
     forward-announce: true
-    forwards: [ dynmap ]
+    forwards: [ dynmap , '#arle-puyon' ]
   local:
-    title: 'Local'
-    auto-join: true
+    title: '&3L&f'
+    auto-join: false
     roma-to-hira: true
     area: 500
     only-world: true
@@ -17,6 +17,6 @@ channels:
     forward-announce: false
     forwards: []
   dynmap:
-    title: 'Dynmap'
-    forwards: [ global ]
+    title: '&aMAP&f'
+    forwards: [ global , '#arle-puyon' ]
 
