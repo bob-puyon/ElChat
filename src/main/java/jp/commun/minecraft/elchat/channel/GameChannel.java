@@ -16,13 +16,18 @@
 
 package jp.commun.minecraft.elchat.channel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import jp.commun.minecraft.elchat.ChatPlayer;
-import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.message.ChatMessage;
 import jp.commun.minecraft.elchat.message.Message;
-import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.*;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class GameChannel extends Channel {
     protected Map<String, ChatPlayer> players;
@@ -101,7 +106,9 @@ public class GameChannel extends Channel {
             }
             recipient.sendMessage(formattedMessage.replace("{channelno}", channelNo));
         }
-        ElChatPlugin.getPlugin().getLogger().info(formattedMessage.replace("{channelno}", ""));
+        //For Slove ColorCode on Linux Clonsole
+        //ElChatPlugin.getPlugin().getLogger().info(formattedMessage.replace("{channelno}", ""));
+        Bukkit.getConsoleSender().sendMessage(formattedMessage.replace("{channelno}", ""));
     }
 
     @Override
@@ -112,7 +119,7 @@ public class GameChannel extends Channel {
             player.sendMessage("You can only be in 10 channels at a time.");
             return;
         }
-        
+
         if (bans.contains(player.getName())) {
             player.sendMessage("You are banned from that channel.");
             return;
