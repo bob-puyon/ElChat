@@ -138,7 +138,7 @@ public abstract class Channel {
 
             String textMessage = ((ChatMessage) message).getMessage();
             // IDSP対策のため全角スペースを半角スペースに置換
-            textMessage = textMessage.replace("　", "　");
+            textMessage = textMessage.replace("　", " ");
 
             format = format.replace("{message}", textMessage);
 

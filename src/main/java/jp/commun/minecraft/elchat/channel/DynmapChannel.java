@@ -40,6 +40,9 @@ public class DynmapChannel extends Channel {
             		String hira = ((ChatMessage)message).getConvertedMessage();
             		if(hira != null){
             			dynmapAPI.sendBroadcastToWeb(null, (" [日本語変換] : " + hira));
+            		}else{
+            			//ex. from IRC message
+            			dynmapAPI.sendBroadcastToWeb(null, formatMessage(message));
             		}
             	}else{
             		dynmapAPI.sendBroadcastToWeb(null, formatMessage(message));
