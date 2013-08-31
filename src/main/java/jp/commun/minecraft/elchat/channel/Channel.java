@@ -285,7 +285,7 @@ public abstract class Channel {
 
     public void announce(String message) {
         Message m = new AnnounceMessage(message);
-        m.setForwardable(forwardAnnounce);
+        m.setForwardable(!forwardAnnounce);
         m.setForwardOnly(!announce);
         sendMessage(m);
     }

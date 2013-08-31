@@ -16,6 +16,8 @@
 
 package jp.commun.minecraft.elchat.command;
 
+import java.util.ArrayList;
+
 import jp.commun.minecraft.elchat.ChatPlayer;
 import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.channel.Channel;
@@ -25,12 +27,10 @@ import jp.commun.minecraft.elchat.message.Message;
 import jp.commun.minecraft.util.StringUtils;
 import jp.commun.minecraft.util.command.Command;
 import jp.commun.minecraft.util.command.CommandHandler;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ChannelCommand implements CommandHandler {
     private final ElChatPlugin plugin;
@@ -45,7 +45,7 @@ public class ChannelCommand implements CommandHandler {
         int channelNo = Integer.parseInt(commandName);
         Channel channel = player.getChannel(channelNo);
         if (channel == null) {
-            sender.sendMessage("No such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
             return;
         }
 
@@ -67,16 +67,19 @@ public class ChannelCommand implements CommandHandler {
             if (channel != null && channel instanceof GameChannel) {
                 sender.sendMessage("[" + player.getChannelNo(channel) + ". " + StringUtils.join((String[]) ((GameChannel) channel).getPlayers().keySet().toArray(), ", "));
             } else {
-                sender.sendMessage("no such channel.");
+                sender.sendMessage("そのチャンネルはありません - no such channel");
             }
         } else {
             int i = 1;
-            List<String> channels = new ArrayList<String>();
+            //List<String> channels = new ArrayList<String>();
+            sender.sendMessage("あなたは以下のチャネルに参加しています - joined below channel");
             for (Channel channel : player.getChannels().values()) {
-                channels.add("[" + String.valueOf(i) + ". " + channel.getTitle() + "]");
-                ++i;
+            	String chlist = "[" + String.valueOf(i) + ". " + channel.getTitle() + "]" + " - チャンネル番号: " + String.valueOf(i) + " * チャンネル名: " + channel.getName();
+                sender.sendMessage( chlist.replaceAll("&([a-z0-9])", "\u00A7$1") );
+            	//channels.add("[" + String.valueOf(i) + ". " + channel.getTitle() + "]");
+                //++i;
             }
-            sender.sendMessage(StringUtils.join(channels, " "));
+            //sender.sendMessage(StringUtils.join(channels, " "));
         }
     }
 
@@ -92,7 +95,7 @@ public class ChannelCommand implements CommandHandler {
         }
 
         if (channel == null) {
-            sender.sendMessage("no such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
             return;
         }
 
@@ -131,11 +134,14 @@ public class ChannelCommand implements CommandHandler {
         }
 
         if (channel == null || !(channel instanceof GameChannel)) {
-            sender.sendMessage("no such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
             return;
         }
 
-        sender.sendMessage("[" + channel.getTitle() + "] " + StringUtils.join(new ArrayList<String>(((GameChannel) channel).getPlayers().keySet()), ", "));
+        sender.sendMessage("チャンネル ["+ channel.getTitle().replaceAll("&([a-z0-9])", "\u00A7$1") + "] に参加しているメンバーは以下です - channel member");
+
+        String chmember = "&6" + StringUtils.join(new ArrayList<String>(((GameChannel) channel).getPlayers().keySet()), "&f, &6") + "&f";
+        sender.sendMessage( chmember.replaceAll("&([a-z0-9])", "\u00A7$1") );
     }
 
     @Command(names = {"channel join", "ch join", "join"}, permissions = {"elchat.channel.join"}, allowConsole = false, min = 1)
@@ -150,7 +156,7 @@ public class ChannelCommand implements CommandHandler {
             plugin.getChannelManager().addChannel(channel);
             channel.join(player);
         } else {
-            sender.sendMessage("no such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
         }
     }
 
@@ -162,7 +168,7 @@ public class ChannelCommand implements CommandHandler {
             channel.quit(player);
             player.removeChannel(channel);
         } else {
-            sender.sendMessage("no such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
         }
     }
 
@@ -178,7 +184,7 @@ public class ChannelCommand implements CommandHandler {
         }
 
         if (channel == null || !(channel instanceof GameChannel)) {
-            sender.sendMessage("no such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
             return;
         }
 
@@ -232,7 +238,7 @@ public class ChannelCommand implements CommandHandler {
         }
 
         if (channel == null || !(channel instanceof GameChannel)) {
-            sender.sendMessage("no such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
             return;
         }
 
@@ -261,7 +267,7 @@ public class ChannelCommand implements CommandHandler {
         }
 
         if (channel == null || !(channel instanceof GameChannel)) {
-            sender.sendMessage("no such channel.");
+            sender.sendMessage("そのチャンネルはありません - no such channel");
             return;
         }
 
@@ -289,7 +295,7 @@ public class ChannelCommand implements CommandHandler {
             channel = plugin.getChannelManager().getChannel(args[0]);
 
             if (channel == null) {
-                sender.sendMessage("no such channel.");
+                sender.sendMessage("そのチャンネルはありません - no such channel");
                 return;
             }
         } else {
@@ -297,7 +303,7 @@ public class ChannelCommand implements CommandHandler {
             channel = plugin.getChannelManager().getChannel(args[0], player);
 
             if (channel == null || !(channel instanceof GameChannel)) {
-                sender.sendMessage("no such channel.");
+                sender.sendMessage("そのチャンネルはありません - no such channel");
                 return;
             }
 

@@ -16,20 +16,21 @@
 
 package jp.commun.minecraft.elchat;
 
-import jp.commun.minecraft.elchat.channel.Channel;
-import jp.commun.minecraft.elchat.channel.GameChannel;
-import jp.commun.minecraft.util.permission.Permission;
-import org.bukkit.Location;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import jp.commun.minecraft.elchat.channel.Channel;
+import jp.commun.minecraft.elchat.channel.GameChannel;
+import jp.commun.minecraft.util.permission.Permission;
+
+import org.bukkit.Location;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 public class ChatPlayer {
     private final Player player;
@@ -76,7 +77,7 @@ public class ChatPlayer {
                     currentChannel = channels.get(defaultChannel);
                 }
             }
-            
+
             suffix = config.getString("suffix");
             prefix = config.getString("prefix");
         }
@@ -157,7 +158,8 @@ public class ChatPlayer {
     public void setCurrentChannel(Channel channel) {
         currentChannel = channel;
 
-        getPlayer().sendMessage("Changed Channel: [" + String.valueOf(getChannelNo(channel)) + ". " + currentChannel.getTitle() + "]");
+        String change_confirm = "発言チャンネルを次のチャネルに変更しました: [" + String.valueOf(getChannelNo(channel)) + ". " + currentChannel.getTitle() + "] - Changed Channel";
+        getPlayer().sendMessage( change_confirm.replaceAll("&([a-z0-9])", "\u00A7$1") );
     }
 
     public boolean hasChannel(Channel channel) {

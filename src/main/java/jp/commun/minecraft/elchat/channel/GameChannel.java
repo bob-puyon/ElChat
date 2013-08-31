@@ -133,17 +133,19 @@ public class GameChannel extends Channel {
         players.put(player.getName(), player);
         player.addChannel(this);
 
-        player.sendMessage("Joined Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
+        String confirm_join = "あなたは次のチャンネルに参加中です: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "] - joined " + getTitle() + " channel";
+        player.sendMessage( confirm_join.replaceAll("&([a-z0-9])", "\u00A7$1") );
 
-        announce(player.getName() + " joined channel.");
+        announce( "&c" + player.getName() + "&f が このチャンネルに参加しました - joined channel.");
     }
 
     @Override
     public void quit(ChatPlayer player) {
         if (!players.containsKey(player.getName())) return;
-        player.sendMessage("Left Channel: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "]");
+        String confirm_left = "あなたは次のチャットから離脱しました: [" + String.valueOf(player.getChannelNo(this)) + ". " + getTitle() + "] - left " + getTitle() + " channel";
+        player.sendMessage( confirm_left );
 
-        announce(player.getName() + " left channel.");
+        announce( "&c" + player.getName() + "&f が このチャンネルから離脱しました - left channel.");
 
         players.remove(player.getName());
     }

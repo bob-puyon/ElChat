@@ -13,6 +13,9 @@ irc:
       charset: UTF-8
       channels:
         '#arle-puyon':
-          title: '&9IRC&f'
-          forwards: [ global, dynmap ]
+            title: '&9IRC&f'
+            forwards: [ global, dynmap ]
+            game-announce: true
+            irc-announce: true
+            relay-announce: false
 

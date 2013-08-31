@@ -16,6 +16,8 @@
 
 package jp.commun.minecraft.elchat.listener;
 
+import java.text.MessageFormat;
+
 import jp.commun.minecraft.elchat.ElChatPlugin;
 import jp.commun.minecraft.elchat.channel.Channel;
 import jp.commun.minecraft.elchat.channel.IRCChannel;
@@ -27,6 +29,7 @@ import jp.commun.minecraft.elchat.irc.Bot;
 import jp.commun.minecraft.elchat.message.ChatMessage;
 import jp.commun.minecraft.elchat.message.Message;
 import jp.commun.minecraft.util.StringUtils;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -67,7 +70,7 @@ public class IRCListener implements Listener {
         if (bot != null) {
             IRCChannel channel = bot.getChannel(event.getChannel());
             if (channel != null && channel.isIrcAnnounce()) {
-                channel.announce(String.format("{0} joined channel.", event.getNick()));
+                channel.announce(MessageFormat.format("&6{0}&f が &a入室しました - joined IRC&f", event.getNick()));
             }
         }
     }
@@ -78,7 +81,7 @@ public class IRCListener implements Listener {
         if (bot != null) {
             IRCChannel channel = bot.getChannel(event.getChannel());
             if (channel != null && channel.isIrcAnnounce()) {
-                channel.announce(String.format("{0} left channel.", event.getNick()));
+                channel.announce(MessageFormat.format("&6{0}&f が &b退出しました - left IRC&f", event.getNick()));
             }
         }
     }
